@@ -12,8 +12,8 @@ using WebApplication1.Database;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(PracticeDbContext))]
-    [Migration("20241017212715_AddInterview")]
-    partial class AddInterview
+    [Migration("20241017213102_Add")]
+    partial class Add
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
