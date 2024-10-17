@@ -10,11 +10,11 @@ public class UserController : ControllerBase
                      string? name,
                      string? surname)
     {
-        
+        throw new Exception();
     }
 
     IResult Login(string? login, string? password)
     {
-        
+        throw new Exception();
     }
 }
