@@ -9,3 +9,10 @@ public class VacancyResponse
     public Student? Student { get; set; }
     public VacancyResponseStatus? Status { get; set; }
 }
+
+public enum VacancyResponseStatus
+{
+    Pending,
+    Declined,
+    InvitedToInterview,
+}

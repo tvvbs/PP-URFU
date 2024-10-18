@@ -1,6 +1,7 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -174,7 +175,8 @@ public class UserController : MyController
             roleClaim,
             idClaim
         };
-        var claimsIdentity = new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType,
+        var claimsIdentity = new ClaimsIdentity(claims, "Token", 
+                                                ClaimsIdentity.DefaultNameClaimType,
                                                 ClaimsIdentity.DefaultRoleClaimType);
         return claimsIdentity;
     }
@@ -193,5 +195,19 @@ public class UserController : MyController
         var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
         
         return encodedJwt;
+    }
+    
+    [Authorize]
+    [HttpGet("current-role-and-id")]
+    public IResult GetCurrentRole()
+    {
+        var role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
+        if (role is null)
+            return Results.Problem("Role not found", statusCode: 500);
+        var id = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
+        if (id is null)
+            return Results.Problem("Id not found", statusCode: 500);
+        
+        return Results.Ok(new {role, id});
     }
 }

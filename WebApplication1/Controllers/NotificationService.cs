@@ -11,11 +11,15 @@ public class NotificationService
     {
         _dbContext = dbContext;
     }
-
-    public void SendNotification(Guid id, string message)
+    
+    public void SendNotification(Guid id, NotificationType notificationType, string jsonData)
     {
-        var student = _dbContext.Students.FirstOrDefault(x => x.Id == id);
-        var company = _dbContext.Companies.FirstOrDefault(x => x.Id == id);
-        var admin = _dbContext.Admins.FirstOrDefault(x => x.Id == id);
+        _dbContext.Notifications.Add(new Notification()
+        {
+            Id = Guid.NewGuid(),
+            JsonData = jsonData,
+            Receiver = id,
+            Type = notificationType
+        });
     }
 }
