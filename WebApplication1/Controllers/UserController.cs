@@ -179,7 +179,7 @@ public class UserController : MyController
         return claimsIdentity;
     }
     
-    public async Task<string?> GenerateToken(string login, string password, string role)
+    private async Task<string?> GenerateToken(string login, string password, string role)
     {
         
         var identity = await GetIdentity(login, password, role);

@@ -119,3 +119,8 @@ C:\Users\onlyf\RiderProjects\ProjectPractice\WebApplication1\bin\Debug\net8.0\Mi
 C:\Users\onlyf\RiderProjects\ProjectPractice\WebApplication1\bin\Debug\net8.0\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\onlyf\RiderProjects\ProjectPractice\WebApplication1\bin\Debug\net8.0\Microsoft.IdentityModel.Tokens.dll
 C:\Users\onlyf\RiderProjects\ProjectPractice\WebApplication1\bin\Debug\net8.0\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\onlyf\RiderProjects\ProjectPractice\WebApplication1\bin\Debug\net8.0\Microsoft.OpenApi.dll
+C:\Users\onlyf\RiderProjects\ProjectPractice\WebApplication1\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\onlyf\RiderProjects\ProjectPractice\WebApplication1\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\onlyf\RiderProjects\ProjectPractice\WebApplication1\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\onlyf\RiderProjects\ProjectPractice\WebApplication1\obj\Debug\net8.0\WebApplication1.MvcApplicationPartsAssemblyInfo.cs
