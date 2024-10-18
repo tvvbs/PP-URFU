@@ -241,3 +241,8 @@ C:/Users/onlyf/RiderProjects/ProjectPractice/WebApplication1/bin/Debug/net8.0/Sy
 /home/simofono/Development/PP-URFU/WebApplication1/obj/Debug/net8.0/WebApplication1.genruntimeconfig.cache
 /home/simofono/Development/PP-URFU/WebApplication1/obj/Debug/net8.0/ref/WebApplication1.dll
 /home/simofono/Development/PP-URFU/WebApplication1/bin/Debug/net8.0/package-lock.json
+/home/simofono/Development/PP-URFU/WebApplication1/bin/Debug/net8.0/Microsoft.OpenApi.dll
+/home/simofono/Development/PP-URFU/WebApplication1/bin/Debug/net8.0/Swashbuckle.AspNetCore.Swagger.dll
+/home/simofono/Development/PP-URFU/WebApplication1/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerGen.dll
+/home/simofono/Development/PP-URFU/WebApplication1/bin/Debug/net8.0/Swashbuckle.AspNetCore.SwaggerUI.dll
+/home/simofono/Development/PP-URFU/WebApplication1/obj/Debug/net8.0/WebApplication1.MvcApplicationPartsAssemblyInfo.cs
