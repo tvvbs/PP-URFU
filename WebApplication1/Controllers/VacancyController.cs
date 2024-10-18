@@ -37,4 +37,5 @@ public class VacancyController : ControllerBase
         _dbContext.SaveChanges();
         return Results.Ok();
     }
+    
 }
