@@ -33,6 +33,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
         };
     });
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(
+        policy => { policy.AllowAnyHeader().AllowAnyMethod().AllowCredentials().SetIsOriginAllowed(origin => true); });
+});
 var app = builder.Build();
 
 var scope = app.Services.CreateScope();
