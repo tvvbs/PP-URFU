@@ -9,13 +9,12 @@ export async function login(email: string, password: string, role: Role): Promis
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({email, password})
+            body: JSON.stringify({login: email, password})
         });
 
         if (response.ok) {
-            const res: LoginApiResponse = await response.json();
             return {
-                token: res.token,
+                token: await response.text(),
                 error: undefined
             }
         } else {
@@ -34,10 +33,6 @@ export async function login(email: string, password: string, role: Role): Promis
             }
         }
     }
-}
-
-type LoginApiResponse = {
-    token: string
 }
 
 export type LoginResult = {
@@ -65,14 +60,14 @@ export function saveUserInfo(role: Role, token: string) {
     localStorage.setItem('token', token);
 }
 
-export async function register_student(email: string, password: string, name: string, surname: string, patronymic?: string): Promise<RegisterStudentResult> {
+export async function register_student(email: string, password: string, passwordConfirm: string, name: string, surname: string, patronymic?: string): Promise<RegisterStudentResult> {
     try {
         const res = await fetch(`${API_URL}/user/register-student`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({email, password, name, surname, patronymic})
+            body: JSON.stringify({login: email, password, passwordRepeat: passwordConfirm, name, surname, patronymic})
         })
 
         if (res.ok) {
@@ -103,14 +98,14 @@ export type RegisterStudentResult = {
     error?: ApiErrorResponse
 }
 
-export async function register_company(email: string, password: string, companyName: string): Promise<RegisterCompanyResult> {
+export async function register_company(email: string, password: string, passwordConfirm: string, companyName: string): Promise<RegisterCompanyResult> {
     try {
         const res = await fetch(`${API_URL}/user/register-company`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({email, password, companyName})
+            body: JSON.stringify({login: email, password, passwordRepeat: passwordConfirm, companyName})
         })
 
         if (res.ok) {

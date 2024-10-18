@@ -34,15 +34,18 @@ const LoginPage = () => {
 
     return (
         <main className="h-screen flex justify-center items-center bg-gray-100">
-            <form onSubmit={handleSubmit}
+            <form onSubmit={async (e) => {
+                e.preventDefault()
+                await handleSubmit(e)
+            }}
                   className="bg-white rounded-md shadow-md p-6 md:max-w-sm
                   lg:max-w-lg xl:max-w-600px sm:w-5/6 sm:mx-auto flex flex-col">
                 <h2 className="text-2xl font-bold text-gray-700 mb-4">Форма входа</h2>
                 <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Введите почту" className="block w-full p-2 mb-4 border border-gray-300 rounded-md" />
                 <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Введите пароль" className="block w-full p-2 mb-4 border border-gray-300 rounded-md" />
                 <select value={role} onChange={(event) => setRole(event.target.value as Role)} className="block w-full p-2 mb-4 border border-gray-300 rounded-md">
-                    <option value={'User' as Role}>Пользователь</option>
-                    <option value={'Enterprise' as Role}>Предприятие</option>
+                    <option value={'Student' as Role}>Пользователь</option>
+                    <option value={'Company' as Role}>Предприятие</option>
                     <option value={'Admin' as Role}>Админ</option>
                 </select>
                 <button type="submit"

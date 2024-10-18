@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 import {Link} from 'react-router-dom'
 import {LOGIN_ROUTE} from "../routes.tsx";
 import {register_company, register_student} from "../auth/auth.ts";
@@ -8,6 +8,7 @@ const RegistrationPage = () => {
     const [isStudent, setIsStudent] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [passwordConfirmation, setPasswordConfirmation] = useState('');
     const [name, setName] = useState('');
     const [surname, setSurname] = useState('');
     const [patronymic, setPatronymic] = useState('');
@@ -16,18 +17,16 @@ const RegistrationPage = () => {
 
     const navigate = useNavigate()
 
-    const handle_submit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-
+    const handle_submit = async () => {
         if (isStudent) {
-            const res = await register_student(email, password, name, surname, patronymic);
+            const res = await register_student(email, password, passwordConfirmation, name, surname, patronymic);
             if (res.success) {
                 navigate(LOGIN_ROUTE)
             } else {
                 setError(res.error?.detail)
             }
         } else {
-            const res = await register_company(email, password, companyName)
+            const res = await register_company(email, password, passwordConfirmation, companyName)
             if (res.success) {
                 navigate(LOGIN_ROUTE)
             } else {
@@ -40,7 +39,10 @@ const RegistrationPage = () => {
         <main className='flex h-dvh justify-center items-center p-10'>
             <div className="md: max-w-2/3 lg: max-w-[600px] mx-auto w-full p-6 bg-white rounded shadow-md">
                 <h1 className="text-3xl font-bold mb-4">Форма регистрации</h1>
-                <form className="flex flex-col space-y-4" onSubmit={handle_submit}>
+                <form className="flex flex-col space-y-4" onSubmit={async (e) => {
+                    e.preventDefault()
+                    await handle_submit()
+                }}>
                     <div className="flex items-center space-x-2">
                         <input
                             type="checkbox"
@@ -74,6 +76,15 @@ const RegistrationPage = () => {
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            className="p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                        <label className="text-lg">Повторите пароль:</label>
+                        <input
+                            type="password"
+                            value={passwordConfirmation}
+                            onChange={(e) => setPasswordConfirmation(e.target.value)}
                             className="p-2 border border-gray-300 rounded"
                         />
                     </div>
