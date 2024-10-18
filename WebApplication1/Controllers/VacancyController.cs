@@ -16,22 +16,23 @@ public class VacancyController : MyController
     }
 
     
-    public class CreateVacancyViewModel
+    public class VacancyViewModel
     {
         public string? Name { get; set; }
         public string? PositionName { get; set; }
         public int? IncomeRub { get; set; }
         public string? Description { get; set; }
+        public Guid? CompanyId { get; set; }
     }
-    [Authorize(Roles = nameof(Company))]
+    [Authorize(Roles = nameof(Admin))]
     [HttpPost("create")]
-    public IResult CreateVacancy(CreateVacancyViewModel viewModel)
+    public IResult CreateVacancy(VacancyViewModel viewModel)
     {
         if (viewModel.Name is null || viewModel.PositionName is null || viewModel.IncomeRub is null || viewModel.Description is null)
         {
             return Results.BadRequest();
         }
-        var company = _dbContext.Companies.First(x=> x.Id == this.User.GetCurrentUserId());
+        var company = _dbContext.Companies.First(x=> x.Id == viewModel.CompanyId);
         var vacancy = new Vacancy()
         {
             Id = Guid.NewGuid(),
@@ -42,6 +43,29 @@ public class VacancyController : MyController
             Company = company
         };
         _dbContext.Vacancies.Add(vacancy);
+        _dbContext.SaveChanges();
+        return Results.Ok();
+    }
+    
+    [Authorize(Roles = nameof(Admin))]
+    [HttpPost("delete")]
+    public IResult DeleteVacancy(Guid id)
+    {
+        var vacancy = _dbContext.Vacancies.First(x => x.Id == id);
+        _dbContext.Vacancies.Remove(vacancy);
+        _dbContext.SaveChanges();
+        return Results.Ok();
+    }
+    
+    [Authorize(Roles = nameof(Admin))]
+    [HttpPost("edit")]
+    public IResult EditVacancy(Guid id, VacancyViewModel viewModel)
+    {
+        var vacancy = _dbContext.Vacancies.First(x => x.Id == id);
+        vacancy.Name = viewModel.Name;
+        vacancy.PositionName = viewModel.PositionName;
+        vacancy.IncomeRub = viewModel.IncomeRub.Value;
+        vacancy.Description = viewModel.Description;
         _dbContext.SaveChanges();
         return Results.Ok();
     }

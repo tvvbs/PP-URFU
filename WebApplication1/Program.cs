@@ -42,7 +42,16 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader(); 
         });
 });
+
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 var app = builder.Build();
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+
 
 var scope = app.Services.CreateScope();
 var bd = scope.ServiceProvider.GetService<PracticeDbContext>();
