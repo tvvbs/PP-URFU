@@ -1,0 +1,1 @@
+export type Role = 'Student' | 'Admin' | 'Company'
