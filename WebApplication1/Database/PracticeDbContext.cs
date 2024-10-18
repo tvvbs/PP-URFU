@@ -74,8 +74,7 @@ public class PracticeDbContext(DbContextOptions<PracticeDbContext> options) : Db
 {
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Admin>().Navigation(x => x.Login).AutoInclude();
-        base.OnModelCreating(modelBuilder);
+       base.OnModelCreating(modelBuilder);
     }
 
     public DbSet<Company> Companies { get; set; }

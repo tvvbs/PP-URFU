@@ -12,7 +12,7 @@ using WebApplication1.Database;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(PracticeDbContext))]
-    [Migration("20241018182355_Init")]
+    [Migration("20241018204747_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -132,11 +132,14 @@ namespace WebApplication1.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("JsonData")
+                        .HasColumnType("text");
+
                     b.Property<Guid?>("Receiver")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Text")
-                        .HasColumnType("text");
+                    b.Property<int?>("Type")
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -260,8 +263,8 @@ namespace WebApplication1.Migrations
                     b.Property<Guid?>("ResumeId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("StatusId")
-                        .HasColumnType("uuid");
+                    b.Property<int?>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<Guid?>("StudentId")
                         .HasColumnType("uuid");
@@ -276,27 +279,11 @@ namespace WebApplication1.Migrations
 
                     b.HasIndex("ResumeId");
 
-                    b.HasIndex("StatusId");
-
                     b.HasIndex("StudentId");
 
                     b.HasIndex("VacancyId");
 
                     b.ToTable("VacancyResponses");
-                });
-
-            modelBuilder.Entity("WebApplication1.Database.VacancyResponseStatus", b =>
-                {
-                    b.Property<Guid?>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("VacancyResponsesStatuses");
                 });
 
             modelBuilder.Entity("WebApplication1.Database.Internship", b =>
@@ -388,10 +375,6 @@ namespace WebApplication1.Migrations
                         .WithMany()
                         .HasForeignKey("ResumeId");
 
-                    b.HasOne("WebApplication1.Database.VacancyResponseStatus", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId");
-
                     b.HasOne("WebApplication1.Database.Student", "Student")
                         .WithMany()
                         .HasForeignKey("StudentId");
@@ -401,8 +384,6 @@ namespace WebApplication1.Migrations
                         .HasForeignKey("VacancyId");
 
                     b.Navigation("Resume");
-
-                    b.Navigation("Status");
 
                     b.Navigation("Student");
 
