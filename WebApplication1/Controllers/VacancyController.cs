@@ -6,7 +6,7 @@ namespace WebApplication1.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class VacancyController : ControllerBase
+public class VacancyController : MyController
 {
     private readonly PracticeDbContext _dbContext;
 
@@ -15,11 +15,19 @@ public class VacancyController : ControllerBase
         _dbContext = dbContext;
     }
 
+    
+    public class CreateVacancyViewModel
+    {
+        public string? Name { get; set; }
+        public string? PositionName { get; set; }
+        public int? IncomeRub { get; set; }
+        public string? Description { get; set; }
+    }
     [Authorize(Roles = nameof(Company))]
     [HttpPost("create")]
-    public IResult CreateVacancy(string? name, string? positionName, int? incomeRub, string? description)
+    public IResult CreateVacancy(CreateVacancyViewModel viewModel)
     {
-        if (name is null || positionName is null || incomeRub is null || description is null)
+        if (viewModel.Name is null || viewModel.PositionName is null || viewModel.IncomeRub is null || viewModel.Description is null)
         {
             return Results.BadRequest();
         }
@@ -27,10 +35,10 @@ public class VacancyController : ControllerBase
         var vacancy = new Vacancy()
         {
             Id = Guid.NewGuid(),
-            Name = name,
-            PositionName = positionName,
-            IncomeRub = incomeRub.Value,
-            Description = description,
+            Name = viewModel.Name,
+            PositionName = viewModel.PositionName,
+            IncomeRub = viewModel.IncomeRub.Value,
+            Description = viewModel.Description,
             Company = company
         };
         _dbContext.Vacancies.Add(vacancy);

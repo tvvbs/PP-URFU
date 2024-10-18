@@ -15,4 +15,5 @@ public class PracticeDbContext(DbContextOptions<PracticeDbContext> options) : Db
     public DbSet<Vacancy> Vacancies { get; set; }
     public DbSet<Student> Students { get; set; }
     public DbSet<Interview> Interviews { get; set; }
+    public DbSet<Admin> Admins { get; set; }
 }

@@ -12,7 +12,7 @@ using WebApplication1.Database;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(PracticeDbContext))]
-    [Migration("20241018173144_Init")]
+    [Migration("20241018182355_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -24,6 +24,23 @@ namespace WebApplication1.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("WebApplication1.Database.Admin", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Login")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Admins");
+                });
 
             modelBuilder.Entity("WebApplication1.Database.Company", b =>
                 {

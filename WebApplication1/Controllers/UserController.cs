@@ -31,7 +31,7 @@ public static class AuthOptions
 
 [ApiController]
 [Route("[controller]")]
-public class UserController : ControllerBase
+public class UserController : MyController
 {
     private readonly PracticeDbContext _dbContext;
 
