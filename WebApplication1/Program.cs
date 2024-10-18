@@ -45,7 +45,7 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(x=> x.UseInlineDefinitionsForEnums());
 var app = builder.Build();
 
 app.UseSwagger();

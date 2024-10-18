@@ -60,4 +60,15 @@ public class StudentController : MyController
         _dbContext.SaveChanges();
         return Results.Ok();
     }
+    
+    [Authorize]
+    [HttpGet("get/{id:guid}")]
+    public IResult GetStudent(Guid id)
+    {
+        var student = _dbContext.Students.FirstOrDefault(x => x.Id == id);
+        if (student is null)
+            return Results.BadRequest("Student not found");
+        
+        return Results.Ok(student);
+    }
 }

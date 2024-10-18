@@ -38,7 +38,29 @@ public class CompanyController : MyController
         
         return Results.Ok(company);
     }
-
+    
+    public record CompanyViewModel(Guid? Id, string? Name, string? Login, string? Password);
+    [Authorize(Roles = nameof(Company))]
+    [HttpPost("edit")]
+    public IResult EditCompany(CompanyViewModel viewModel)
+    {
+        if (viewModel.Id is null)
+            return Results.BadRequest("Id should not be null");
+        
+        var company = _dbContext.Companies.FirstOrDefault(x => x.Id == viewModel.Id);
+        if (company is null)
+            return Results.BadRequest("Company not found");
+        
+        company.Name = viewModel.Name;
+        company.Login = viewModel.Login;
+        company.Password = viewModel.Password;
+        
+        _dbContext.SaveChanges();
+        return Results.Ok();
+    }
+    
+    
+    
     private async Task<File> DbFileFromIFormFile(IFormFile file)
     {
         var stream = new MemoryStream();
