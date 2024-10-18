@@ -55,7 +55,6 @@ app.UseSwaggerUI();
 
 var scope = app.Services.CreateScope();
 var bd = scope.ServiceProvider.GetService<PracticeDbContext>();
-bd.Database.EnsureCreated();
 bd.Database.Migrate();
 
 

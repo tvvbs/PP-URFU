@@ -1,4 +1,6 @@
-﻿namespace WebApplication1.Database;
+﻿using System.ComponentModel;
+
+namespace WebApplication1.Database;
 
 public class VacancyResponse
 {
@@ -12,7 +14,11 @@ public class VacancyResponse
 
 public enum VacancyResponseStatus
 {
+    
+    [Description("Ожидает решения")]
     Pending,
+    [Description("Отклонено")]
     Declined,
+    [Description("Приглашен на собеседование")]
     InvitedToInterview,
 }
