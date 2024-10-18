@@ -12,8 +12,8 @@ using WebApplication1.Database;
 namespace WebApplication1.Migrations
 {
     [DbContext(typeof(PracticeDbContext))]
-    [Migration("20241018172814_AddAdmin")]
-    partial class AddAdmin
+    [Migration("20241018173144_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
