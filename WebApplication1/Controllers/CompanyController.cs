@@ -5,7 +5,7 @@ using WebApplication1.Database;
 namespace WebApplication1.Controllers;
 [ApiController]
 [Route("[controller]")]
-public class CompanyController : ControllerBase
+public class CompanyController : MyController
 {
     [Authorize]
     [HttpGet("get-all")]

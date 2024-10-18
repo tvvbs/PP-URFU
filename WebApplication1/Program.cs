@@ -36,15 +36,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(
-        policy => { policy.AllowAnyOrigin()
+        policy => { 
+            policy.AllowAnyOrigin()
             .AllowAnyMethod()
-            .AllowAnyHeader(); });
+            .AllowAnyHeader(); 
+        });
 });
 var app = builder.Build();
 
 var scope = app.Services.CreateScope();
 var bd = scope.ServiceProvider.GetService<PracticeDbContext>();
 bd.Database.EnsureCreated();
+bd.Database.Migrate();
 
 
 // bd.VacancyResponsesStatuses.Add(new VacancyResponseStatus() { Id = Guid.Parse("624654C4-AAF5-489E-93F5-F043F9FE8C93"), Name = "На рассмотрении"});
@@ -60,11 +63,13 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
 app.UseCors();
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
