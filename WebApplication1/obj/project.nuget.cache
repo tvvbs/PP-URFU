@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "ACW3RSG5+EIiK4d4PZxdkAFuLU214K0V8NxBVlAA8Fexxl/6wx8VXfg+eP+cNRbeZvSf6jQKKvxZaKkkBWU2MQ==",
+  "dgSpecHash": "S9iILoyjWPE=",
   "success": true,
-  "projectFilePath": "C:\\Users\\onlyf\\RiderProjects\\ProjectPractice\\WebApplication1\\WebApplication1.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "/home/simofono/Development/PP-URFU/WebApplication1/WebApplication1.csproj",
+  "expectedPackageFiles": [
+    "/home/simofono/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.8/microsoft.aspnetcore.app.ref.8.0.8.nupkg.sha512"
+  ],
   "logs": []
 }
