@@ -197,6 +197,13 @@ public class UserController : MyController
         return encodedJwt;
     }
     
+    /// <summary>
+    /// Role and Id for current user
+    /// </summary>
+    /// <remarks>
+    /// return type: {"role": "Student/Company/Admin", "id": "uuid" }
+    /// </remarks>
+    /// <returns></returns>
     [Authorize]
     [HttpGet("current-role-and-id")]
     public IResult GetCurrentRole()
