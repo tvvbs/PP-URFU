@@ -7032,24 +7032,26 @@
     ]
   },
   "packageFolders": {
-    "/home/simofono/.nuget/packages/": {}
+    "C:\\Users\\onlyf\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/simofono/Development/PP-URFU/WebApplication1/WebApplication1.csproj",
+      "projectUniqueName": "C:\\Users\\onlyf\\RiderProjects\\ProjectPractice\\WebApplication1\\WebApplication1.csproj",
       "projectName": "WebApplication1",
-      "projectPath": "/home/simofono/Development/PP-URFU/WebApplication1/WebApplication1.csproj",
-      "packagesPath": "/home/simofono/.nuget/packages/",
-      "outputPath": "/home/simofono/Development/PP-URFU/WebApplication1/obj/",
+      "projectPath": "C:\\Users\\onlyf\\RiderProjects\\ProjectPractice\\WebApplication1\\WebApplication1.csproj",
+      "packagesPath": "C:\\Users\\onlyf\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\onlyf\\RiderProjects\\ProjectPractice\\WebApplication1\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/simofono/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\onlyf\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -7098,12 +7100,6 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
-        "downloadDependencies": [
-          {
-            "name": "Microsoft.AspNetCore.App.Ref",
-            "version": "[8.0.8, 8.0.8]"
-          }
-        ],
         "frameworkReferences": {
           "Microsoft.AspNetCore.App": {
             "privateAssets": "none"
@@ -7112,7 +7108,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.108/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.400/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
