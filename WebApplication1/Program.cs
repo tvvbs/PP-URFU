@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using WebApplication1;
 using WebApplication1.Controllers;
 using WebApplication1.Database;
 
@@ -45,7 +46,7 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x=> x.UseInlineDefinitionsForEnums());
+builder.Services.AddSwaggerGen(x=> x.SchemaFilter<SwaggerEnumSchemaFilter>());
 var app = builder.Build();
 
 app.UseSwagger();
