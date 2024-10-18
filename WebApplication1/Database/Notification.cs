@@ -6,6 +6,7 @@ public class Notification
     public Guid? Receiver { get; set; }
     public NotificationType? Type { get; set; }
     public string? JsonData { get; set; }
+    public bool? IsRead { get; set; }
 }
 
 public enum NotificationType

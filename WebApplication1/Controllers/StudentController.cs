@@ -24,7 +24,7 @@ public class StudentController : MyController
     }
     [Authorize(Roles = $"{nameof(Student)},{nameof(Admin)}")]
     [HttpPost("edit")]
-    public IResult EditStudent(StudentViewModel viewModel)
+    public IResult EditStudent([FromBody] StudentViewModel viewModel)
     {
         // validate viewModel id and edit student and save changes
         if (viewModel.Id is null)
@@ -49,7 +49,7 @@ public class StudentController : MyController
     
     // delete student 
     [Authorize(Roles = nameof(Admin))]
-    [HttpPost("delete")]
+    [HttpDelete("delete/{id:guid}")]
     public IResult DeleteStudent(Guid id)
     {
         var student = _dbContext.Students.FirstOrDefault(x => x.Id == id);
@@ -63,6 +63,7 @@ public class StudentController : MyController
     
     [Authorize]
     [HttpGet("get/{id:guid}")]
+    [ProducesResponseType(200, Type = typeof(Student))]
     public IResult GetStudent(Guid id)
     {
         var student = _dbContext.Students.FirstOrDefault(x => x.Id == id);
@@ -70,5 +71,13 @@ public class StudentController : MyController
             return Results.BadRequest("Student not found");
         
         return Results.Ok(student);
+    }
+    
+    [Authorize(Roles = nameof(Admin))]
+    [HttpGet("get-all")]
+    [ProducesResponseType(200, Type = typeof(List<Student>))]
+    public IResult GetAll()
+    {
+        return Results.Ok(_dbContext.Students.ToList());
     }
 }

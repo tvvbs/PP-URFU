@@ -23,6 +23,7 @@ public class CompanyController : MyController
 
     [Authorize]
     [HttpGet("get-all")]
+    [ProducesResponseType(200, Type = typeof(List<Company>))]
     public IResult GetAll()
     {
         return Results.Ok(_dbContext.Companies.ToList());
@@ -30,6 +31,7 @@ public class CompanyController : MyController
 
     [Authorize]
     [HttpGet("get/{id:guid}")]
+    [ProducesResponseType(200, Type = typeof(Company))]
     public IResult GetCompany(Guid id)
     {
         var company =_dbContext.Companies.FirstOrDefault(x => x.Id == id);
@@ -40,9 +42,9 @@ public class CompanyController : MyController
     }
     
     public record CompanyViewModel(Guid? Id, string? Name, string? Login, string? Password);
-    [Authorize(Roles = nameof(Company))]
+    [Authorize(Roles = $"{nameof(Company)},{nameof(Admin)}")]
     [HttpPost("edit")]
-    public IResult EditCompany(CompanyViewModel viewModel)
+    public IResult EditCompany([FromBody] CompanyViewModel viewModel)
     {
         if (viewModel.Id is null)
             return Results.BadRequest("Id should not be null");
@@ -113,7 +115,7 @@ public class CompanyController : MyController
 
     [Authorize(Roles = $"{nameof(Company)},{nameof(Admin)}")]
     [HttpPost("edit-vacancy-response-status")]
-    public IResult EditVacancyResponseStatus(EditVacancyResponseStatusViewModel viewModel)
+    public IResult EditVacancyResponseStatus([FromBody] EditVacancyResponseStatusViewModel viewModel)
     {
         var response = _dbContext.VacancyResponses.IncludeAllRecursively().FirstOrDefault(x => x.Id == viewModel.ResponseId);
         if (response is null)

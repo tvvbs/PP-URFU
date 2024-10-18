@@ -44,7 +44,7 @@ public class VacancyController : MyController
     
     [Authorize(Roles = nameof(Admin))]
     [HttpPost("create")]
-    public IResult CreateVacancy(VacancyViewModel viewModel)
+    public IResult CreateVacancy([FromBody] VacancyViewModel viewModel)
     {
         if (viewModel.Id is not null)
             return Results.BadRequest("Id should be null");
@@ -72,7 +72,7 @@ public class VacancyController : MyController
     }
     
     [Authorize(Roles = nameof(Admin))]
-    [HttpPost("delete")]
+    [HttpDelete("delete/{id:guid}")]
     public IResult DeleteVacancy(Guid id)
     {
         var vacancy = _dbContext.Vacancies.First(x => x.Id == id);
@@ -83,7 +83,7 @@ public class VacancyController : MyController
     
     [Authorize(Roles = nameof(Admin))]
     [HttpPost("edit")]
-    public IResult EditVacancy(VacancyViewModel viewModel)
+    public IResult EditVacancy([FromBody] VacancyViewModel viewModel)
     {
         if (viewModel.Id is null)
             return Results.BadRequest("Id should not be null");
@@ -96,7 +96,4 @@ public class VacancyController : MyController
         _dbContext.SaveChanges();
         return Results.Ok();
     }
-    
-    
-    
 }

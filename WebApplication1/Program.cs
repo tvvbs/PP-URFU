@@ -1,6 +1,8 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApplication1;
 using WebApplication1.Controllers;
 using WebApplication1.Database;
@@ -8,7 +10,12 @@ using WebApplication1.Database;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers().AddJsonOptions(
+    opts =>
+    {
+        var enumConverter = new JsonStringEnumConverter();
+        opts.JsonSerializerOptions.Converters.Add(enumConverter);
+    });
 builder.Services.AddDbContext<PracticeDbContext>((o) => o.UseNpgsql("Host=85.115.189.150;Database=Website;Port=5432;Username=postgres;Password=12345678;IncludeErrorDetail=true"));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -46,7 +53,7 @@ builder.Services.AddCors(options =>
 
 
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x=> x.SchemaFilter<SwaggerEnumSchemaFilter>());
+builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 app.UseSwagger();

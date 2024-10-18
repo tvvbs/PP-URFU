@@ -19,7 +19,8 @@ public class NotificationService
             Id = Guid.NewGuid(),
             JsonData = jsonData,
             Receiver = id,
-            Type = notificationType
+            Type = notificationType,
+            IsRead = false
         });
     }
 }
