@@ -4,13 +4,13 @@ using WebApplication1.Database;
 
 namespace WebApplication1.Controllers;
 
+[ApiController]
+[Route("[controller]")]
 public class StudentController : MyController
 {
-    public PracticeDbContext _dbContext;
-
-    public StudentController(PracticeDbContext dbContext)
+    
+    public StudentController(PracticeDbContext dbContext) : base(dbContext)
     {
-        _dbContext = dbContext;
     }
 
     public class StudentViewModel
