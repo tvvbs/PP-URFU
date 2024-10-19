@@ -1,3 +1,4 @@
+using System.Data.Common;
 using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -7,6 +8,7 @@ using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApplication1;
 using WebApplication1.Controllers;
 using WebApplication1.Database;
+using WebApplication1.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,6 +61,8 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
+
+
 var app = builder.Build();
 
 app.UseSwagger();
@@ -92,6 +96,8 @@ app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<DbContextTransactionMiddleware>();
 
 app.MapControllerRoute(
     name: "default",

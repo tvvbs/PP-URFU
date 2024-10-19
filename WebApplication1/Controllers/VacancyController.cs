@@ -9,13 +9,12 @@ namespace WebApplication1.Controllers;
 [Route("[controller]")]
 public class VacancyController : MyController
 {
-    private readonly PracticeDbContext _dbContext;
+    
     private NotificationService _notificationService;
     private LinkGenerator _linkGenerator;
 
-    public VacancyController(PracticeDbContext dbContext, NotificationService notificationService, LinkGenerator linkGenerator)
+    public VacancyController(PracticeDbContext dbContext, NotificationService notificationService, LinkGenerator linkGenerator) : base(dbContext)
     {
-        _dbContext = dbContext;
         _notificationService = notificationService;
         _linkGenerator = linkGenerator;
     }
@@ -95,5 +94,13 @@ public class VacancyController : MyController
         vacancy.Description = viewModel.Description;
         _dbContext.SaveChanges();
         return Results.Ok();
+    }
+
+    [Authorize]
+    [HttpGet("all")]
+    [ProducesResponseType(200, Type = typeof(List<Vacancy>))]
+    public IResult GetAll()
+    {
+        return Results.Ok(_dbContext.Vacancies.IncludeAllRecursively().ToList());
     }
 }

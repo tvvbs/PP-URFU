@@ -8,11 +8,9 @@ namespace WebApplication1.Controllers;
 [Route("[controller]")]
 public class NotificationsController : MyController
 {
-    private readonly PracticeDbContext _dbContext;
 
-    public NotificationsController(PracticeDbContext dbContext)
+    public NotificationsController(PracticeDbContext dbContext) : base(dbContext)
     {
-        _dbContext = dbContext;    
     }
     
     

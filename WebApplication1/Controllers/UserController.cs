@@ -34,11 +34,8 @@ public static class AuthOptions
 [Route("[controller]")]
 public class UserController : MyController
 {
-    private readonly PracticeDbContext _dbContext;
-
-    public UserController(PracticeDbContext dbContext)
+    public UserController(PracticeDbContext dbContext) : base(dbContext)
     {
-        _dbContext = dbContext;
     }
     
     public class RegisterStudentViewModel

@@ -10,15 +10,11 @@ namespace WebApplication1.Controllers;
 [Route("[controller]")]
 public class CompanyController : MyController
 {
-    private readonly PracticeDbContext _dbContext;
     private NotificationService _notificationService;
-    private LinkGenerator _linkGenerator;
 
-    public CompanyController(PracticeDbContext dbContext, NotificationService notificationService, LinkGenerator linkGenerator)
+    public CompanyController(PracticeDbContext dbContext, NotificationService notificationService, LinkGenerator linkGenerator) : base(dbContext)
     {
-        _dbContext = dbContext;
         _notificationService = notificationService;
-        _linkGenerator = linkGenerator;
     }
 
     [Authorize]
@@ -139,7 +135,8 @@ public class CompanyController : MyController
         {
             _notificationService.SendNotification(response.Student.Id,
                                                   NotificationType.FreeForm,
-                                                  $"Вы приглашены на собеседование по вакансии {response.Vacancy.Name}");
+                                                  $"Вы приглашены на собеседование по вакансии {response.Vacancy.Name} проверьте свой календарь собеседований");
+            
         }
         if (viewModel.Status == VacancyResponseStatus.Declined)
         {
