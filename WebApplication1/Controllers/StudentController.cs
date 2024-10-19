@@ -4,12 +4,13 @@ using WebApplication1.Database;
 
 namespace WebApplication1.Controllers;
 
+[ApiController]
 [Route("[controller]")]
 public class StudentController : MyController
 {
     public PracticeDbContext _dbContext;
 
-    public StudentController(PracticeDbContext dbContext)
+    public StudentController(PracticeDbContext dbContext): base(dbContext)
     {
         _dbContext = dbContext;
     }
@@ -24,29 +25,36 @@ public class StudentController : MyController
         public string? Patronymic { get; set; }
     }
     [Authorize(Roles = $"{nameof(Student)},{nameof(Admin)}")]
-    [HttpPost("edit")]
-    public IResult EditStudent([FromBody] StudentViewModel viewModel)
-    {
-        // validate viewModel id and edit student and save changes
-        if (viewModel.Id is null)
-            return Results.BadRequest("Id should not be null");
-        
-        // check if same login exists
-        var sameLogin = _dbContext.Students.Where((x) => x.Login == viewModel.Login).ToList();
-        if (sameLogin.Any())
-            return Results.Problem(detail: "Логин занят", statusCode: 500);
-        
-        var student = _dbContext.Students.First(x => x.Id == viewModel.Id);
-        student.Login = viewModel.Login;
-        student.Password = viewModel.Password;
-        
-        student.Name = viewModel.Name;
-        student.Surname = viewModel.Surname;
-        student.Patronymic = viewModel.Patronymic;
-        
-        _dbContext.SaveChanges();
-        return Results.Ok();
-    }
+        [HttpPost("edit")]
+        public IResult EditStudent([FromBody] StudentViewModel viewModel)
+        {
+            // validate viewModel id and edit student and save changes
+            if (viewModel.Id is null)
+                return Results.BadRequest("Id should not be null");
+
+            var currentUser = _dbContext.Students.FirstOrDefault(x => x.Id == viewModel.Id);
+            if (currentUser is null)
+                return Results.BadRequest("Student not found");
+
+            if (viewModel.Login != currentUser.Login)
+            {
+                // check if same login exists
+                var sameLogin = _dbContext.Students.Where((x) => x.Login == viewModel.Login).ToList();
+                if (sameLogin.Any())
+                    return Results.Problem(detail: "Логин занят", statusCode: 500);
+            }
+
+            var student = _dbContext.Students.First(x => x.Id == viewModel.Id);
+            student.Login = viewModel.Login;
+            student.Password = viewModel.Password;
+
+            student.Name = viewModel.Name;
+            student.Surname = viewModel.Surname;
+            student.Patronymic = viewModel.Patronymic;
+
+            _dbContext.SaveChanges();
+            return Results.Ok();
+        }
     
     // delete student 
     [Authorize(Roles = nameof(Admin))]

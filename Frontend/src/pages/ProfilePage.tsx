@@ -60,8 +60,6 @@ const StudentProfileForm = ({token, id}: StudentProfileProps) => {
     }
 
 
-
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
