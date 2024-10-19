@@ -157,6 +157,7 @@ public class UserController : MyController
         {
             nameof(Student) => _dbContext.Students.FirstOrDefault(x => x.Login == login && x.Password == password)?.Id,
             nameof(Company) => _dbContext.Companies.FirstOrDefault(x => x.Login == login && x.Password == password)?.Id,
+            nameof(Admin) => _dbContext.Admins.FirstOrDefault(x => x.Login == login && x.Password == password)?.Id,
             _ => throw new Exception("Invalid role")
         };
         if (id is null)
