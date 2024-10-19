@@ -136,6 +136,28 @@ public class CompanyController : MyController
             _notificationService.SendNotification(response.Student.Id,
                                                   NotificationType.FreeForm,
                                                   $"Вы приглашены на собеседование по вакансии {response.Vacancy.Name} проверьте свой календарь собеседований");
+            // get interviews for this vacancy 
+            var interviews = _dbContext.Interviews.IncludeAllRecursively().Where(x => x.Vacancy.Id == response.Vacancy.Id).ToList();
+            // get interviews for this student
+            var studentInterviews = interviews.Where(x => x.Student.Id == response.Student.Id).ToList();
+            
+            // calculate date for interview so that doesnt intersects in day with vacancy interviews and student interviews. Be aware that there may be no interviews at all
+            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 14, 0, 0).Add(TimeSpan.FromDays(1));
+            
+            while (interviews.Any(x => x.DateTime.Date == date.Date) || studentInterviews.Any(x => x.DateTime.Date == date.Date) || date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+            {
+                date = date.Add(TimeSpan.FromDays(1));
+            }
+            // add new interview to db
+            var interview = new Interview
+            {
+                Id = Guid.NewGuid(),
+                DateTime = date,
+                Student = response.Student,
+                Vacancy = response.Vacancy,
+                VacancyResponse = response
+            };
+            _dbContext.Interviews.Add(interview);
             
         }
         if (viewModel.Status == VacancyResponseStatus.Declined)

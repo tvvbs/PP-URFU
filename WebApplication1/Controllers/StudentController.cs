@@ -89,4 +89,39 @@ public class StudentController : MyController
     {
         return Results.Ok(_dbContext.Students.ToList());
     }
+    
+    // add action to add review of student similiar to action of adding review of vacancy
+    // company can add review of student only if student has passed interview
+    public record ReviewViewModel(Guid? StudentId, Guid? CompanyId, string? Comment, int? Rating);
+    [Authorize]
+    [HttpPost("add-review")]
+    public IResult AddReview([FromBody] ReviewViewModel viewModel)
+    {
+        
+        if (viewModel.StudentId is null || viewModel.Rating is null || viewModel.Comment is null || viewModel.CompanyId is null) 
+            return Results.BadRequest("StudentId and Rating should not be null");
+        
+        // check that Rating value is in range of enum Rating
+        if (!Enum.IsDefined(typeof(Rating), viewModel.Rating.Value))
+            return Results.BadRequest("Неверное значение рейтинга");
+        
+        // check that company has passed interview (Result property of Interview class) for this student
+        var interview = _dbContext.Interviews.IncludeAllRecursively().FirstOrDefault(x => x.Student.Id == viewModel.StudentId && x.Vacancy.Company.Id == viewModel.CompanyId);
+        if (interview is null || interview.Result != InterviewResult.Passed)
+            return Results.BadRequest("Оставить отзыв могут только компании, прошедшие собеседование");
+        
+        // // add review to database
+        // var review = new ReviewOfStudent()
+        // {
+        //     Id = Guid.NewGuid(),
+        //     Student = _dbContext.Students.First(x => x.Id == viewModel.StudentId),
+        //     Company = _dbContext.Companies.First(x => x.Id == viewModel.CompanyId),
+        //     Rating = (Rating)viewModel.Rating.Value,
+        //     Comment = viewModel.Comment
+        // };
+        // _dbContext.ReviewsOfStudent.Add(review);
+        _dbContext.SaveChanges();
+        return Results.Ok();
+    }
+    
 }
