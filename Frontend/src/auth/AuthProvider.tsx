@@ -6,6 +6,7 @@ import {ApiErrorResponse} from "../types/ApiErrorResponse.ts";
 type AuthContext = {
     token?: string | null,
     role?: Role | null
+    id?: string | null
     handleLogin: (email: string, password: string, role: Role) => Promise<LoginResult>
     handleLogout: () => Promise<boolean>
 }
@@ -17,31 +18,36 @@ type AuthProviderProps = React.PropsWithChildren;
 export default function AuthProvider({children}: AuthProviderProps) {
     const [token, setToken] = useState<string | null>();
     const [role, setRole] = useState<Role | null>();
+    const [id, setId] = useState<string | null>();
 
     useEffect(() => {
-        const {role, token} = getUserInfo()
+        const {role, token, id} = getUserInfo()
 
-        if (!role || !token) {
+        if (!role || !token || !id) {
             setToken(null)
             setRole(null)
+            setId(null)
         } else {
             setToken(token)
             setRole(role)
+            setId(id)
         }
     }, [])
 
     async function handleLogin(email: string, password: string, role: Role): Promise<LoginResult> {
         try {
             const response = await login(email, password, role);
-            if (response.token !== undefined && response.token !== null) {
+            if (!response.error) {
                 setToken(response.token)
                 setRole(role)
-                saveUserInfo(role, response.token)
+                saveUserInfo(role, response.token!, response.id!);
 
                 return {
                     success: true
                 }
             }
+
+            console.log("Login is not suc")
 
             return {
                 success: false,
@@ -68,7 +74,7 @@ export default function AuthProvider({children}: AuthProviderProps) {
         return true
     }
 
-    return <AuthContext.Provider value={{token, role, handleLogin, handleLogout}}>
+    return <AuthContext.Provider value={{token, role, id, handleLogin, handleLogout}}>
         {children}
     </AuthContext.Provider>
 }

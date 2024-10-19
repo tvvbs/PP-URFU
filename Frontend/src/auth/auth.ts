@@ -1,10 +1,10 @@
 import {Role} from "../types/Role.ts";
 import {API_URL} from "../consts.ts";
-import {ApiErrorResponse} from "../types/ApiErrorResponse.ts";
+import {ApiErrorResponse, DefaultApiErrorResponse} from "../types/ApiErrorResponse.ts";
 
-export async function login(email: string, password: string, role: Role): Promise<LoginResult> {
+export async function login(email: string, password: string, role: Role): Promise<LoginResponse> {
     try {
-        const response = await fetch(`${API_URL}/user/login-${role.toLowerCase()}`, {
+        const loginResponse = await fetch(`${API_URL}/user/login-${role.toLowerCase()}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -12,52 +12,75 @@ export async function login(email: string, password: string, role: Role): Promis
             body: JSON.stringify({login: email, password})
         });
 
-        if (response.ok) {
-            return {
-                token: await response.text(),
-                error: undefined
+        if (loginResponse.ok) {
+            const token = await loginResponse.json();
+
+            const getIdRoleResponse = await fetch(`${API_URL}/user/current-role-and-id`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            if (getIdRoleResponse.ok) {
+                const {id}: GetRoleAndIdResponse = await getIdRoleResponse.json();
+                console.log(id)
+                return {
+                    token: token,
+                    id: id,
+                }
+            } else {
+                const res: ApiErrorResponse = await getIdRoleResponse.json();
+                return {
+                    error: res
+                }
             }
         } else {
-            const res: ApiErrorResponse = await response.json();
+            const res: ApiErrorResponse = await loginResponse.json();
             return {
                 error: res
             }
         }
     } catch {
         return {
-            error: {
-                type: 'unknown',
-                title: 'Unknown error',
-                status: 500,
-                detail: 'Что-то пошло не так'
-            }
+            error: DefaultApiErrorResponse
         }
     }
 }
 
-export type LoginResult = {
+type GetRoleAndIdResponse = {
+    id: string,
+    role: Role
+}
+
+export type LoginResponse = {
     token?: string,
+    id?: string
     error?: ApiErrorResponse
 }
 
 export function getUserInfo(): GetUserInfoResponse {
     const role = localStorage.getItem('role') as Role | null;
     const token = localStorage.getItem('token');
+    const id = localStorage.getItem('id');
 
     return {
         role,
-        token
+        token,
+        id
     }
 }
 
 export type GetUserInfoResponse = {
     role: Role | null
     token: string | null
+    id: string | null
 }
 
-export function saveUserInfo(role: Role, token: string) {
+export function saveUserInfo(role: Role, token: string, id: string) {
     localStorage.setItem('role', role);
     localStorage.setItem('token', token);
+    localStorage.setItem('id', id);
 }
 
 export async function register_student(email: string, password: string, passwordConfirm: string, name: string, surname: string, patronymic?: string): Promise<RegisterStudentResult> {

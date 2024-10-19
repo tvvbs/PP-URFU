@@ -44,7 +44,7 @@ const LoginPage = () => {
                 <input type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Введите почту" className="block w-full p-2 mb-4 border border-gray-300 rounded-md" />
                 <input type="password" value={password} onChange={(event) => setPassword(event.target.value)} placeholder="Введите пароль" className="block w-full p-2 mb-4 border border-gray-300 rounded-md" />
                 <select value={role} onChange={(event) => setRole(event.target.value as Role)} className="block w-full p-2 mb-4 border border-gray-300 rounded-md">
-                    <option value={'Student' as Role}>Пользователь</option>
+                    <option value={'Student' as Role}>Студент</option>
                     <option value={'Company' as Role}>Предприятие</option>
                     <option value={'Admin' as Role}>Админ</option>
                 </select>

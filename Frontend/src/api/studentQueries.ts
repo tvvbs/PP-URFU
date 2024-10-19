@@ -2,8 +2,8 @@ import {API_URL} from "../consts.ts";
 import {Student} from "../types/Student.ts";
 import {ApiErrorResponse} from "../types/ApiErrorResponse.ts";
 
-export const getStudentProfile = async (token: string): Promise<Student> => {
-    const response = await fetch(`${API_URL}/Student/info`, {
+export const getStudentProfile = async (id: string, token: string): Promise<Student> => {
+    const response = await fetch(`${API_URL}/Student/get/${id}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -19,14 +19,14 @@ export const getStudentProfile = async (token: string): Promise<Student> => {
     }
 }
 
-export const updateStudentProfile = async (token: string, name: string, surname: string, patronymic: string): Promise<void> => {
-    const response = await fetch(`${API_URL}/Student/info`, {
-        method: 'PUT',
+export const updateStudentProfile = async (token: string, id: string, login: string, new_password: string, name: string, surname: string, patronymic: string): Promise<void> => {
+    const response = await fetch(`${API_URL}/Student/edit`, {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({name, surname, patronymic})
+        body: JSON.stringify({id, login, password: new_password, name, surname, patronymic})
     });
 
     if (!response.ok) {

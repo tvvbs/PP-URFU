@@ -6,7 +6,7 @@
     <members>
         <member name="M:WebApplication1.Controllers.UserController.GetCurrentRole">
             <summary>
-            
+            Role and Id for current user
             </summary>
             <remarks>
             return type: {"role": "Student/Company/Admin", "id": "uuid" }

@@ -4,6 +4,7 @@ using WebApplication1.Database;
 
 namespace WebApplication1.Controllers;
 
+[Route("[controller]")]
 public class StudentController : MyController
 {
     public PracticeDbContext _dbContext;
