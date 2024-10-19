@@ -118,10 +118,12 @@ public class VacancyController : MyController
         if (!Enum.IsDefined(typeof(Rating), viewModel.Rating.Value))
             return Results.BadRequest("Неверное значение рейтинга");
         
-        // check that student has passed interview (Result property of Interview class) for this vacancy
-        var interview = _dbContext.Interviews.FirstOrDefault(x => x.Student.Id == viewModel.StudentId && x.Vacancy.Id == viewModel.VacancyId);
-        if (interview is null || interview.Result != InterviewResult.Passed)
-            return Results.BadRequest("Оставить отзыв могут только студенты, прошедшие собеседование");
+        // check that student had internship in this company
+        var internship = _dbContext.Internships.IncludeAllRecursively()
+            .FirstOrDefault(x => x.Student.Id == viewModel.StudentId && x.Vacancy.Id == viewModel.VacancyId);
+        if (internship is null)
+            return Results.BadRequest("Студент не проходил стажировку в этой компании");
+        
         
         // add review to database
         var review = new ReviewOfVacancy()
