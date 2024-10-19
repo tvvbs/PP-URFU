@@ -21,21 +21,7 @@ public class MyController : Controller
         Console.WriteLine("Parameters:\n" + System.Text.Json.JsonSerializer.Serialize(filterContext.ActionArguments, new JsonSerializerOptions(){WriteIndented = true}));
         Console.ResetColor();
         
-        // do PracticeDbContext, transactions and handle exceptions here
-        using var transaction = _dbContext.Database.BeginTransaction();
-        try
-        {
-            base.OnActionExecuting(filterContext);
-            
-            transaction.Commit();
-        }
-        catch (Exception ex)
-        {
-            transaction.Rollback();
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Exception: {ex.Message}");
-            Console.ResetColor();
-            throw;
-        }
+
+        base.OnActionExecuting(filterContext);
     }
 }

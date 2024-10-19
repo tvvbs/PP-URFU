@@ -30,11 +30,18 @@ public class StudentController : MyController
         if (viewModel.Id is null)
             return Results.BadRequest("Id should not be null");
         
-        // check if same login exists
-        var sameLogin = _dbContext.Students.Where((x) => x.Login == viewModel.Login).ToList();
-        if (sameLogin.Any())
-            return Results.Problem(detail: "Логин занят", statusCode: 500);
-        
+        var currentUser = _dbContext.Students.FirstOrDefault(x => x.Id == viewModel.Id);
+        if (currentUser is null)
+            return Results.BadRequest("Student not found");
+
+        if (viewModel.Login != currentUser.Login)
+        {
+            // check if same login exists
+            var sameLogin = _dbContext.Students.Where((x) => x.Login == viewModel.Login).ToList();
+            if (sameLogin.Any())
+                return Results.Problem(detail: "Логин занят", statusCode: 500);
+        }
+
         var student = _dbContext.Students.First(x => x.Id == viewModel.Id);
         student.Login = viewModel.Login;
         student.Password = viewModel.Password;
