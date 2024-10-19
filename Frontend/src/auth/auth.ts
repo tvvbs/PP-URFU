@@ -128,7 +128,7 @@ export async function register_company(email: string, password: string, password
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({login: email, password, passwordRepeat: passwordConfirm, companyName})
+            body: JSON.stringify({login: email, password, passwordRepeat: passwordConfirm, name: companyName})
         })
 
         if (res.ok) {

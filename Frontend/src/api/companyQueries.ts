@@ -20,8 +20,8 @@ export const getCompanyProfile = async (token: string, id: string): Promise<Comp
 }
 
 export const updateCompanyProfile = async (token: string, id: string, login: string, new_password: string, name: string): Promise<void> => {
-    const response = await fetch(`${API_URL}/Company/info`, {
-        method: 'PUT',
+    const response = await fetch(`${API_URL}/Company/edit`, {
+        method: 'POST',
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`

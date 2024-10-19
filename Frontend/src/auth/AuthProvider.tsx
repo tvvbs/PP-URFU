@@ -47,8 +47,6 @@ export default function AuthProvider({children}: AuthProviderProps) {
                 }
             }
 
-            console.log("Login is not suc")
-
             return {
                 success: false,
                 error: response.error

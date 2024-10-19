@@ -179,6 +179,7 @@ const CompanyProfileForm = ({ token, id }: CompanyProfileFormProps) => {
 
     useEffect(() => {
         if (data) {
+            console.log(data.name)
             setLogin(data.login);
             setPassword(data.password);
             setCompanyName(data.name);
