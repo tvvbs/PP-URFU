@@ -62,7 +62,7 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 });
 
-
+builder.Services.AddScoped<NotificationService>();
 var app = builder.Build();
 
 app.UseSwagger();

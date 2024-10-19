@@ -103,4 +103,39 @@ public class VacancyController : MyController
     {
         return Results.Ok(_dbContext.Vacancies.IncludeAllRecursively().ToList());
     }
+    
+    
+    
+    public record ReviewViewModel(Guid? VacancyId, Guid? StudentId, string? Comment, int? Rating);
+    [Authorize]
+    [HttpPost("add-review")]
+    public IResult AddReview([FromBody] ReviewViewModel viewModel)
+    {
+        if (viewModel.VacancyId is null || viewModel.Rating is null || viewModel.Comment is null || viewModel.StudentId is null) 
+            return Results.BadRequest("VacancyId and Rating should not be null");
+        
+        // check that Rating value is in range of enum Rating
+        if (!Enum.IsDefined(typeof(Rating), viewModel.Rating.Value))
+            return Results.BadRequest("Неверное значение рейтинга");
+        
+        // check that student has passed interview (Result property of Interview class) for this vacancy
+        var interview = _dbContext.Interviews.FirstOrDefault(x => x.Student.Id == viewModel.StudentId && x.Vacancy.Id == viewModel.VacancyId);
+        if (interview is null || interview.Result != InterviewResult.Passed)
+            return Results.BadRequest("Оставить отзыв могут только студенты, прошедшие собеседование");
+        
+        // add review to database
+        var review = new ReviewOfVacancy()
+        {
+            Id = Guid.NewGuid(),
+            Student = _dbContext.Students.First(x => x.Id == viewModel.StudentId),
+            Vacancy = _dbContext.Vacancies.First(x => x.Id == viewModel.VacancyId),
+            Comment = viewModel.Comment,
+            Rating = (Rating) viewModel.Rating.Value
+        };
+        _dbContext.ReviewsOfVacancies.Add(review);
+        
+        _dbContext.SaveChanges();
+        return Results.Ok();
+    }
+    
 }
