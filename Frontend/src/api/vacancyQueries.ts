@@ -71,3 +71,21 @@ export const updateVacancy =
             throw new Error((await res.json() as ApiErrorResponse).detail);
         }
     }
+
+export type DeleteVacancyBody = {
+    token: string
+    vacancyId: string
+}
+export const deleteVacancy = async ({token, vacancyId}: DeleteVacancyBody): Promise<void> => {
+    const res = await fetch(`${API_URL}/Vacancy/delete/${vacancyId}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (!res.ok) {
+        throw new Error((await res.json() as ApiErrorResponse).detail);
+    }
+}

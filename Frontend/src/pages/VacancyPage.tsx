@@ -1,12 +1,13 @@
 import React, {useState} from "react";
 import Header from "../components/Header.tsx";
 import {useAuth} from "../auth/AuthProvider.tsx";
-import {useQuery, useMutation} from "@tanstack/react-query";
-import {getVacancy, updateVacancy} from "../api/vacancyQueries.ts";
+import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
+import {deleteVacancy, getVacancy, updateVacancy} from "../api/vacancyQueries.ts";
 import {useParams} from "react-router";
 import {useNavigate} from "react-router-dom";
 import {Vacancy} from "../types/Vacancy.ts";
 import {ApiErrorResponse} from "../types/ApiErrorResponse.ts";
+import {MAIN_PAGE_ROUTE} from "../routes.tsx";
 
 const VacancyPage = () => {
     return (
@@ -18,12 +19,26 @@ const VacancyPage = () => {
 };
 
 const VacancyComponent = () => {
-    const {id} = useParams<{ id: string }>();
+    const [error, setError] = useState<string>();
+
+    const {id: vacancyId} = useParams<{ id: string }>();
     const {token, role} = useAuth();
+
+    const navigate = useNavigate();
+
     const {data: vacancy, error: vacancyError, isLoading: vacancyIsLoading} = useQuery({
-        queryFn: () => getVacancy(token!, id!),
-        queryKey: ['vacancy', id],
+        queryFn: () => getVacancy(token!, vacancyId!),
+        queryKey: ['vacancy', vacancyId],
     });
+    const mutation = useMutation({
+        mutationFn: () => deleteVacancy({token: token!, vacancyId: vacancyId!}),
+        onSuccess: () => {
+            navigate(MAIN_PAGE_ROUTE);
+        },
+        onError: (error: ApiErrorResponse) => {
+            setError(error.detail)
+        }
+    })
 
     const [isEditing, setIsEditing] = useState(false);
 
@@ -81,16 +96,25 @@ const VacancyComponent = () => {
                                 {vacancy?.company?.name || 'Не указано'}
                             </p>
                         </div>
-
+                        {error && <p className="text-red-500">{error}</p>}
                     </div>
 
                     {role === 'Admin' && (
-                        <button
-                            onClick={() => setIsEditing(true)}
-                            className="mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
-                        >
-                            Редактировать
-                        </button>
+                        <div className='flex gap-x-3'>
+                            <button
+                                onClick={() => setIsEditing(true)}
+                                className="mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-700"
+                            >
+                                Редактировать
+                            </button>
+                            <button
+                                onClick={() => mutation.mutate()}
+                                disabled={mutation.isPending}
+                                className="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-700"
+                            >
+                                Удалить
+                            </button>
+                        </div>
                     )}
                 </>
             ) : (
@@ -118,6 +142,7 @@ const VacancyEditForm = ({vacancy, setIsEditing}: VacancyEditFormProps) => {
 
     const [error, setError] = useState<string>();
 
+    const queryClient = useQueryClient();
     const mutation = useMutation({
         mutationFn: () => {
             console.log("Mutation in mutation fn")
@@ -132,6 +157,7 @@ const VacancyEditForm = ({vacancy, setIsEditing}: VacancyEditFormProps) => {
             })
         },
         onSuccess: () => {
+            queryClient.invalidateQueries({queryKey: ['vacancy', vacancy.id]})
             navigate(0)
         },
         onError: (error: ApiErrorResponse) => {
