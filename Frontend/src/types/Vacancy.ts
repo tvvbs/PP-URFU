@@ -1,8 +1,10 @@
+import {Company} from "./Company.ts";
+
 export type Vacancy = {
-    id: number
+    id: string
     name: string,
     positionName: string
-    incomeRub: string,
+    incomeRub: number,
     description: string,
-    companyId: string
+    company?: Company
 }

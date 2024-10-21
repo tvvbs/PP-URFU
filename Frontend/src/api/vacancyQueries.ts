@@ -37,3 +37,37 @@ export const getVacancy = async (token: string, id: string): Promise<Vacancy> =>
         throw new Error((await res.json() as ApiErrorResponse).detail);
     }
 }
+
+export type UpdateVacancyBody = {
+    token: string
+    vacancyId: string
+    vacancyName: string
+    positionName: string
+    incomeRub: number
+    description: string
+    companyId: string
+}
+
+export const updateVacancy =
+    async (request: UpdateVacancyBody): Promise<void> => {
+        console.log("Update query")
+        const res = await fetch(`${API_URL}/Vacancy/edit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${request.token}`
+            },
+            body: JSON.stringify({
+                id: request.vacancyId,
+                name: request.vacancyName,
+                positionName: request.positionName,
+                incomeRub: request.incomeRub,
+                description: request.description,
+                companyId: request.companyId
+            })
+        });
+
+        if (!res.ok) {
+            throw new Error((await res.json() as ApiErrorResponse).detail);
+        }
+    }
