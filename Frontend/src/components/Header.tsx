@@ -1,5 +1,5 @@
 import {Link} from "react-router-dom";
-import {PROFILE_ROUTE} from "../routes.tsx";
+import {CREATE_VACANCY_ROUTE, PROFILE_ROUTE} from "../routes.tsx";
 import {useAuth} from "../auth/AuthProvider.tsx";
 
 type HeaderProps = {
@@ -7,7 +7,7 @@ type HeaderProps = {
 }
 
 const Header = ({title}: HeaderProps) => {
-    const {handleLogout} = useAuth()
+    const {handleLogout, role} = useAuth()
 
     return (
         <header className="bg-blue-400">
@@ -16,8 +16,9 @@ const Header = ({title}: HeaderProps) => {
                 <ul className="flex justify-center space-x-10 text-white">
                     <li><Link to="/">Вакансии</Link></li>
                     <li><Link to="/responses">Отклики на вакансии</Link></li>
-                    <li><Link to="/calendar">Календарь собеседований</Link></li>
+                    {role === 'Student' && <li><Link to="/calendar">Календарь собеседований</Link></li>}
                     <li><Link to={PROFILE_ROUTE}>Настройка профиля</Link></li>
+                    {role === 'Admin' && <li><Link to={CREATE_VACANCY_ROUTE}>Создать вакансию</Link></li>}
                     <li>
                         <button className='bg-red-500 px-3 py-1 rounded-md' onClick={async () => await handleLogout()}>
                             Выйти из системы
@@ -27,7 +28,8 @@ const Header = ({title}: HeaderProps) => {
             </nav>
 
         </header>
-    );
+    )
+        ;
 };
 
 export default Header;

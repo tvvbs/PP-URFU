@@ -12,6 +12,7 @@ export const LOGIN_ROUTE = '/login'
 export const SIGN_UP_ROUTE = '/sign-up'
 export const PROFILE_ROUTE = '/profile'
 export const VACANCIES_ROUTE = '/vacancies'
+export const CREATE_VACANCY_ROUTE = '/vacancies/create'
 
 export const router = createBrowserRouter([
     {
@@ -35,5 +36,10 @@ export const router = createBrowserRouter([
         path: PROFILE_ROUTE,
         element: <ProtectedRoute
             allowed_roles={['Student', 'Company']}><ProfilePage/></ProtectedRoute>
+    },
+    {
+        path: CREATE_VACANCY_ROUTE,
+        element: <ProtectedRoute
+            allowed_roles={['Admin']}><ProfilePage/></ProtectedRoute>
     }
 ])

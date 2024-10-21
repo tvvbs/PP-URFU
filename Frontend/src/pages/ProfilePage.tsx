@@ -15,6 +15,7 @@ const ProfilePage = () => {
             {role === 'Student' ?
                 <StudentProfileForm token={token!} id={id!}/>
                 : <CompanyProfileForm token={token!} id={id!}/>}
+            {role === 'Admin' && <AdminProfilePage token={token!} id={id!}/>}
         </main>
     );
 };
@@ -261,5 +262,18 @@ const CompanyProfileForm = ({ token, id }: CompanyProfileFormProps) => {
         </form>
     );
 };
+
+type AdminProfilePageProps = {
+    token: string,
+    id: string
+}
+
+const AdminProfilePage = (props: AdminProfilePageProps) => {
+    return (
+        <div>
+            Линчый кабинет админа
+        </div>
+    )
+}
 
 export default ProfilePage;
