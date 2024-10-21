@@ -157,6 +157,7 @@ public class UserController : MyController
         {
             nameof(Student) => _dbContext.Students.FirstOrDefault(x => x.Login == login && x.Password == password)?.Id,
             nameof(Company) => _dbContext.Companies.FirstOrDefault(x => x.Login == login && x.Password == password)?.Id,
+            nameof(Admin) => _dbContext.Admins.FirstOrDefault(x => x.Login == login && x.Password == password)?.Id,
             _ => throw new Exception("Invalid role")
         };
         if (id is null)
@@ -213,5 +214,25 @@ public class UserController : MyController
             return Results.Problem("Id not found", statusCode: 500);
         
         return Results.Ok(new {role, id});
+    }
+    
+    // create login method for admins
+    [HttpPost("login-admin")]
+    public async Task<IResult> LoginAdmin([FromBody] LoginViewModel viewModel)
+    {
+        if (User.Identity?.IsAuthenticated is true)
+        {
+            return Results.Problem(detail: "Вы уже авторизованы", statusCode: 500);
+        }
+
+        var user = _dbContext.Admins.FirstOrDefault(x => x.Login == viewModel.Login && x.Password == viewModel.Password);
+        if (user is null)
+            return Results.Problem(detail: "Логин или пароль не совпадают");
+        
+        var token = await GenerateToken(viewModel.Login, viewModel.Password, nameof(Admin));
+        if (token is not null)
+            return Results.Ok(token);
+        
+        return Results.Problem("Не удалось создать токен", statusCode: StatusCodes.Status500InternalServerError);
     }
 }
