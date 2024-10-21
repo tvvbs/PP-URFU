@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApplication1.Database;
 
 namespace WebApplication1.Controllers;
@@ -35,7 +36,7 @@ public class VacancyController : MyController
     [ProducesResponseType(200, Type = typeof(Vacancy))]
     public IResult GetVacancy(Guid id)
     {
-        var vacancy = _dbContext.Vacancies.IncludeAllRecursively().FirstOrDefault(x => x.Id == id);
+        var vacancy = _dbContext.Vacancies.Include((x) => x.Company).IncludeAllRecursively().FirstOrDefault(x => x.Id == id);
         if (vacancy is null)
             return Results.BadRequest("Vacancy not found");
         
@@ -102,7 +103,7 @@ public class VacancyController : MyController
     [ProducesResponseType(200, Type = typeof(List<Vacancy>))]
     public IResult GetAll()
     {
-        return Results.Ok(_dbContext.Vacancies.IncludeAllRecursively().ToList());
+        return Results.Ok(_dbContext.Vacancies.Include(x=>x.Company).IncludeAllRecursively().ToList());
     }
     
     
