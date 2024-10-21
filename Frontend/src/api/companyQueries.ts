@@ -34,3 +34,20 @@ export const updateCompanyProfile = async (token: string, id: string, login: str
         throw new Error(res.detail);
     }
 }
+
+export const getCompanies = async (token: string): Promise<Company[]> => {
+    const response = await fetch(`${API_URL}/Company/get-all`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (response.ok) {
+        return await response.json()
+    } else {
+        const res: ApiErrorResponse = await response.json();
+        throw new Error(res.detail);
+    }
+}

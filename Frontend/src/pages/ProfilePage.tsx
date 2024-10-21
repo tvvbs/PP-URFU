@@ -12,10 +12,9 @@ const ProfilePage = () => {
     return (
         <main>
             <Header title="Настройка профиля"/>
-            {role === 'Student' ?
-                <StudentProfileForm token={token!} id={id!}/>
-                : <CompanyProfileForm token={token!} id={id!}/>}
-            {role === 'Admin' && <AdminProfilePage token={token!} id={id!}/>}
+            {role === 'Student' && <StudentProfileForm token={token!} id={id!}/>}
+            {role === 'Company' && <CompanyProfileForm token={token!} id={id!}/>}
+            {role === 'Admin' && <AdminProfilePage/>}
         </main>
     );
 };
@@ -263,12 +262,8 @@ const CompanyProfileForm = ({ token, id }: CompanyProfileFormProps) => {
     );
 };
 
-type AdminProfilePageProps = {
-    token: string,
-    id: string
-}
 
-const AdminProfilePage = (props: AdminProfilePageProps) => {
+const AdminProfilePage = () => {
     return (
         <div>
             Линчый кабинет админа

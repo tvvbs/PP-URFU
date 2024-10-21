@@ -106,10 +106,10 @@ public class VacancyController : MyController
     
     
     
-    public record ReviewViewModel(Guid? VacancyId, Guid? StudentId, string? Comment, int? Rating);
+    public record AddRwReviewViewModel(Guid? VacancyId, Guid? StudentId, string? Comment, int? Rating);
     [Authorize]
     [HttpPost("add-review")]
-    public IResult AddReview([FromBody] ReviewViewModel viewModel)
+    public IResult AddReview([FromBody] AddRwReviewViewModel viewModel)
     {
         if (viewModel.VacancyId is null || viewModel.Rating is null || viewModel.Comment is null || viewModel.StudentId is null) 
             return Results.BadRequest("VacancyId and Rating should not be null");

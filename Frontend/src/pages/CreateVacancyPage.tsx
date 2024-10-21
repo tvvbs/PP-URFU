@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { fetchCompanies } from '../api/companies';
-import {Vacancy} from "../types/Vacancy.ts";
-import {useAuth} from "../auth/AuthProvider.tsx"; // assume this is your API endpoint
+import {useAuth} from "../auth/AuthProvider.tsx";
+import {getCompanies} from "../api/companyQueries.ts";
+import {createVacancy} from "../api/vacancyQueries.ts";
+import Header from "../components/Header.tsx";
+import {useNavigate} from "react-router-dom";
 
 const CreateVacancy = () => {
     const {token} = useAuth();
@@ -13,42 +15,47 @@ const CreateVacancy = () => {
     const [description, setDescription] = useState('');
     const [companyId, setCompanyId] = useState('');
 
+    const [error, setError] = useState<string>();
+
+    const navigate = useNavigate()
+
     const { data: companies, isLoading: isCompaniesLoading } = useQuery({
         queryKey: ['companies'],
-        queryFn: () => fetchCompanies(token),
+        queryFn: () => getCompanies(token!),
     });
 
-    const { mutateAsync, isLoading: isCreating } = useMutation(
-        async (vacancy: Vacancy) => {
-            // assume this is your API endpoint to create a new vacancy
-            const response = await fetch('/api/vacancies', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(vacancy),
-            });
-            return response.json();
+    const { mutateAsync, isPending: isCreating } = useMutation({
+        mutationFn: () => createVacancy(token!, name, description, positionName, incomeRub, companyId)
+    });
+
+    useEffect(() => {
+        if (companies && companies.length > 0) {
+            setCompanyId(companies[0].id);
         }
-    );
+    }, [companies]);
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const vacancy: Vacancy = {
-            name,
-            positionName,
-            incomeRub,
-            description,
-            companyId,
-        };
-        await mutateAsync(vacancy);
+        const res = await mutateAsync();
+        if (res) {
+            setError(res.detail)
+        } else {
+            navigate(0)
+        }
     };
 
+    if (isCompaniesLoading) {
+        return <div>Загрузка...</div>;
+    }
+
     return (
-        <div className="max-w-md mx-auto p-4">
-            <h2 className="text-lg font-bold mb-4">Create New Vacancy</h2>
-            <form onSubmit={handleSubmit}>
+        <main>
+            <Header title={"Создание вакансии"}/>
+            <h2 className="text-lg font-bold mb-4 text-center mt-5">Создать новую вакансию</h2>
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 border border-gray-300 rounded-md shadow-md">
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="name">
-                        Name
+                        Название вакансии
                     </label>
                     <input
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -60,7 +67,7 @@ const CreateVacancy = () => {
                 </div>
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="positionName">
-                        Position Name
+                        Название должности
                     </label>
                     <input
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -72,7 +79,7 @@ const CreateVacancy = () => {
                 </div>
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="incomeRub">
-                        Income Rub
+                        Зарплата в рублях
                     </label>
                     <input
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -84,7 +91,7 @@ const CreateVacancy = () => {
                 </div>
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
-                        Description
+                        Описание вакансии
                     </label>
                     <textarea
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -95,7 +102,7 @@ const CreateVacancy = () => {
                 </div>
                 <div className="mb-4">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="companyId">
-                        Company
+                        Компания
                     </label>
                     <select
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -106,7 +113,7 @@ const CreateVacancy = () => {
                         {isCompaniesLoading ? (
                             <option>Loading...</option>
                         ) : (
-                            companies.map((company) => (
+                            companies!.map((company) => (
                                 <option key={company.id} value={company.id}>
                                     {company.name}
                                 </option>
@@ -119,10 +126,11 @@ const CreateVacancy = () => {
                     type="submit"
                     disabled={isCreating}
                 >
-                    {isCreating ? 'Creating...' : 'Create Vacancy'}
+                    {isCreating ? 'Идет создание вакансии' : 'Создать вакансию'}
                 </button>
+                {error && <p className="text-red-500">{error}</p>}
             </form>
-        </div>
+        </main>
     );
 };
 

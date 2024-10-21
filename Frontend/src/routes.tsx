@@ -5,6 +5,8 @@ import NotAuthenticatedPage from "./pages/NotAuthenticatedPage.tsx";
 import LoginPage from "./pages/LoginPage.tsx";
 import SignUpPage from "./pages/SignUpPage.tsx";
 import ProfilePage from "./pages/ProfilePage.tsx";
+import CreateVacancyPage from "./pages/CreateVacancyPage.tsx";
+import VacancyPage from "./pages/VacancyPage.tsx";
 
 export const MAIN_PAGE_ROUTE = "/"
 export const NOT_AUTHENTICATED_ROUTE = '/not-authenticated'
@@ -13,6 +15,7 @@ export const SIGN_UP_ROUTE = '/sign-up'
 export const PROFILE_ROUTE = '/profile'
 export const VACANCIES_ROUTE = '/vacancies'
 export const CREATE_VACANCY_ROUTE = '/vacancies/create'
+export const VACANCY_ROUTE = '/vacancies/:id'
 
 export const router = createBrowserRouter([
     {
@@ -35,11 +38,16 @@ export const router = createBrowserRouter([
     {
         path: PROFILE_ROUTE,
         element: <ProtectedRoute
-            allowed_roles={['Student', 'Company']}><ProfilePage/></ProtectedRoute>
+            allowed_roles={['Student', 'Company', 'Admin']}><ProfilePage/></ProtectedRoute>
     },
     {
         path: CREATE_VACANCY_ROUTE,
         element: <ProtectedRoute
-            allowed_roles={['Admin']}><ProfilePage/></ProtectedRoute>
+            allowed_roles={['Admin']}><CreateVacancyPage/></ProtectedRoute>
+    },
+    {
+        path: VACANCY_ROUTE,
+        element: <ProtectedRoute
+            allowed_roles={['Student', 'Company', 'Admin']}><VacancyPage/></ProtectedRoute>
     }
 ])

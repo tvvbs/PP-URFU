@@ -8,8 +8,8 @@ import {useAuth} from "../auth/AuthProvider.tsx";
 const MainPage = () => {
     return (
         <main>
-            <Header title="Вакансии"/>
-            <VacanciesList/>
+                <Header title="Вакансии"/>
+                <VacanciesList/>
         </main>
     );
 };
@@ -22,28 +22,27 @@ const VacanciesList = () => {
         queryKey: ['vacancies']
     })
 
-
     if (isLoading) {
-        return <div>Загрузка...</div>;
+        return <div className="text-center text-lg md:text-xl lg:text-2xl">Загрузка...</div>;
     }
 
     if (error) {
-        return <div>Error: {error.message}</div>;
+        return <div className="text-center text-lg text-red-500 md:text-xl lg:text-2xl">Error: {error.message}</div>;
     }
 
     return (
-        <>
+        <div className="container mx-auto p-4 md:p-6 lg:p-8 border border-gray-300 rounded-md shadow-md">
+            {data?.length === 0 && <div className="text-center text-lg md:text-xl lg:text-2xl">Вакансий нет</div>}
             {
                 data!.map(vacancy => (
-                    <div key={vacancy.id}>
-                        <h2>{vacancy.name}</h2>
-                        <p>{vacancy.incomeRub}</p>
-                        <Link to={`${VACANCIES_ROUTE}/${vacancy.id}`}>Перейти к вакансии</Link>
+                    <div key={vacancy.id} className="border-b border-gray-200 py-4 md:py-6 lg:py-8">
+                        <h2 className="text-lg font-bold md:text-xl lg:text-2xl">{vacancy.name}</h2>
+                        <p className="text-gray-600 md:text-lg lg:text-xl">{vacancy.incomeRub}₽</p>
+                        <Link to={`${VACANCIES_ROUTE}/${vacancy.id}`} className="text-blue-500 hover:text-blue-700 md:text-lg lg:text-xl">Перейти к вакансии</Link>
                     </div>
                 ))
             }
-        </>
-
+        </div>
     );
 }
 
