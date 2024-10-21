@@ -32,9 +32,10 @@ public class VacancyController : MyController
     
     [Authorize]
     [HttpGet("get/{id:guid}")]
+    [ProducesResponseType(200, Type = typeof(Vacancy))]
     public IResult GetVacancy(Guid id)
     {
-        var vacancy = _dbContext.Vacancies.FirstOrDefault(x => x.Id == id);
+        var vacancy = _dbContext.Vacancies.IncludeAllRecursively().FirstOrDefault(x => x.Id == id);
         if (vacancy is null)
             return Results.BadRequest("Vacancy not found");
         
