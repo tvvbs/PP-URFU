@@ -77,6 +77,11 @@ public class VacancyController : MyController
     public IResult DeleteVacancy(Guid id)
     {
         var vacancy = _dbContext.Vacancies.First(x => x.Id == id);
+        var vacancyResponses = _dbContext.VacancyResponses.Where(x => x.Vacancy.Id == id);
+        foreach (var vacancyResponse in vacancyResponses)
+        {
+            _dbContext.VacancyResponses.Remove(vacancyResponse);
+        }
         _dbContext.Vacancies.Remove(vacancy);
         _dbContext.SaveChanges();
         return Results.Ok();
