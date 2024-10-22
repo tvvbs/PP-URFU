@@ -3,8 +3,8 @@ import {useAuth} from "../auth/AuthProvider.tsx";
 import React, {useEffect, useState} from "react";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {getStudentProfile, updateStudentProfile} from "../api/studentQueries.ts";
-import {useNavigate} from "react-router-dom";
 import {getCompanyProfile, updateCompanyProfile} from "../api/companyQueries.ts";
+import toast from "react-hot-toast";
 
 const ProfilePage = () => {
     const {role, token, id} = useAuth();
@@ -12,9 +12,9 @@ const ProfilePage = () => {
     return (
         <main>
             <Header title="Настройка профиля"/>
-            {role === 'Student' ?
-                <StudentProfileForm token={token!} id={id!}/>
-                : <CompanyProfileForm token={token!} id={id!}/>}
+            {role === 'Student' && <StudentProfileForm token={token!} id={id!}/>}
+            {role === 'Company' && <CompanyProfileForm token={token!} id={id!}/>}
+            {role === 'Admin' && <AdminProfilePage/>}
         </main>
     );
 };
@@ -29,7 +29,14 @@ const StudentProfileForm = ({token, id}: StudentProfileProps) => {
         queryKey: ['student', id], queryFn: () => getStudentProfile(id, token)
     });
     const mutation = useMutation({
-        mutationFn: () => updateStudentProfile(token, id, login!, password!, name!, surname!, patronymic!)
+        mutationFn: () => updateStudentProfile(token, id, login!, password!, name!, surname!, patronymic!),
+        onSuccess: async () => {
+            toast.success("Профиль успешно обновлен")
+            await queryClient.invalidateQueries({ queryKey: ['student', id] })
+        },
+        onError: () => {
+            toast.error("Не удалось обновить профиль")
+        }
     })
     const queryClient = useQueryClient()
 
@@ -49,7 +56,6 @@ const StudentProfileForm = ({token, id}: StudentProfileProps) => {
         }
     }, [data]);
 
-    const navigate = useNavigate()
 
     if (isLoading || !data) {
         return <div>Loading...</div>;
@@ -60,15 +66,10 @@ const StudentProfileForm = ({token, id}: StudentProfileProps) => {
     }
 
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
 
-        await mutation.mutateAsync()
-
-        if (mutation.isSuccess) {
-            await queryClient.invalidateQueries({queryKey: ['student', id]})
-            navigate(0)
-        }
+        mutation.mutate()
     };
 
     return (
@@ -188,11 +189,17 @@ const CompanyProfileForm = ({ token, id }: CompanyProfileFormProps) => {
 
     const mutation = useMutation({
         mutationFn: () => updateCompanyProfile(token, id, login!, password!, companyName!),
+        onSuccess: async () => {
+            toast.success("Профиль успешно обновлен")
+            await queryClient.invalidateQueries({ queryKey: ['company', id] })
+        },
+        onError: () => {
+            toast.error("Не удалось обновить профиль")
+        }
     });
 
     const queryClient = useQueryClient();
 
-    const navigate = useNavigate();
 
     if (isLoading) {
         return <div>Loading...</div>;
@@ -202,15 +209,10 @@ const CompanyProfileForm = ({ token, id }: CompanyProfileFormProps) => {
         return <div>Error: {error.message}</div>;
     }
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        await mutation.mutateAsync();
-
-        if (mutation.isSuccess) {
-            await queryClient.invalidateQueries({ queryKey: ['company', id] });
-            navigate(0);
-        }
+        mutation.mutate()
     };
 
     return (
@@ -261,5 +263,14 @@ const CompanyProfileForm = ({ token, id }: CompanyProfileFormProps) => {
         </form>
     );
 };
+
+
+const AdminProfilePage = () => {
+    return (
+        <div>
+            Линчый кабинет админа
+        </div>
+    )
+}
 
 export default ProfilePage;

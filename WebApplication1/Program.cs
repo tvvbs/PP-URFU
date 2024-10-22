@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using WebApplication1;
@@ -19,7 +20,12 @@ builder.Services.AddControllers().AddJsonOptions(
         var enumConverter = new JsonStringEnumConverter();
         opts.JsonSerializerOptions.Converters.Add(enumConverter);
     });
-builder.Services.AddDbContext<PracticeDbContext>((o) => o.UseNpgsql("Host=85.115.189.150;Database=Website;Port=5432;Username=postgres;Password=12345678;IncludeErrorDetail=true"));
+builder.Services.AddDbContext<PracticeDbContext>((o) => o.UseNpgsql("Host=85.115.189.150;Database=Website;Port=5432;Username=postgres;Password=12345678;IncludeErrorDetail=true")
+    .ConfigureWarnings(x =>
+    {
+        x.Ignore(CoreEventId.InvalidIncludePathError);
+        x.Ignore(CoreEventId.NavigationBaseIncludeIgnored);
+    }));
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
