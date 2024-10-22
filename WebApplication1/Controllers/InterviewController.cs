@@ -14,6 +14,15 @@ public class InterviewController : MyController
     
     // create method for getting all interviews
     [Authorize]
+    [HttpGet("get-all")]
+    [ProducesResponseType(200, Type = typeof(List<Interview>))]
+    public IResult GetAll()
+    {
+        return Results.Ok(_dbContext.Interviews.IncludeAllRecursively().ToList());
+    }
+
+    // create method for getting all interviews
+    [Authorize]
     [HttpGet("get-all-for-student/{studentId:guid}")]
     public IResult GetAllForStudent(Guid studentId)
     {
