@@ -137,17 +137,16 @@ public class CompanyController : MyController
                                                   NotificationType.FreeForm,
                                                   $"Вы приглашены на собеседование по вакансии {response.Vacancy.Name} проверьте свой календарь собеседований");
             // get interviews for this vacancy 
-            var interviews = _dbContext.Interviews.IncludeAllRecursively().Where(x => x.Vacancy.Id == response.Vacancy.Id).ToList();
+            var companyInterviews = _dbContext.Interviews.IncludeAllRecursively().Where(x => x.Vacancy.Id == response.Vacancy.Id).ToList();
             // get interviews for this student
-            var studentInterviews = interviews.Where(x => x.Student.Id == response.Student.Id).ToList();
+            var studentInterviews = companyInterviews.Where(x => x.Student.Id == response.Student.Id).ToList();
             
             // calculate date for interview so that doesnt intersects in day with vacancy interviews and student interviews. Be aware that there may be no interviews at all
-            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 14, 0, 0,DateTimeKind.Utc).Add(TimeSpan.FromDays(1));
+            var date = viewModel.DateTime.ToUniversalTime();
             
-            while (interviews.Any(x => x.DateTime.Date == date.Date) || studentInterviews.Any(x => x.DateTime.Date == date.Date) || date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
+            if (companyInterviews.Any(x => x.DateTime.Date == date.Date) || studentInterviews.Any(x => x.DateTime.Date == date.Date) || date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
             {
-                date = date.Add(TimeSpan.FromDays(1));
-                
+                return Results.Problem("Этот день уже занят",statusCode:409,title:"Невозможно назначить собеседование");
             }
             // add new interview to db
             var interview = new Interview
