@@ -142,11 +142,12 @@ public class CompanyController : MyController
             var studentInterviews = interviews.Where(x => x.Student.Id == response.Student.Id).ToList();
             
             // calculate date for interview so that doesnt intersects in day with vacancy interviews and student interviews. Be aware that there may be no interviews at all
-            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 14, 0, 0).Add(TimeSpan.FromDays(1));
+            var date = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 14, 0, 0,DateTimeKind.Local).Add(TimeSpan.FromDays(1));
             
             while (interviews.Any(x => x.DateTime.Date == date.Date) || studentInterviews.Any(x => x.DateTime.Date == date.Date) || date.DayOfWeek == DayOfWeek.Saturday || date.DayOfWeek == DayOfWeek.Sunday)
             {
                 date = date.Add(TimeSpan.FromDays(1));
+                
             }
             // add new interview to db
             var interview = new Interview
