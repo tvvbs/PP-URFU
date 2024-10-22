@@ -74,10 +74,17 @@ var scope = app.Services.CreateScope();
 var bd = scope.ServiceProvider.GetService<PracticeDbContext>();
 bd.Database.Migrate();
 
+if (bd.Admins.Where(x => x.Login == "admin@admin").Any())
+{
+    var admin = new Admin()
+    {
+        Id = Guid.NewGuid(),
+        Login = "admin@admin",
+        Password = "admin"
+    };
+    bd.Admins.Add(admin);
+}
 
-// bd.VacancyResponsesStatuses.Add(new VacancyResponseStatus() { Id = Guid.Parse("624654C4-AAF5-489E-93F5-F043F9FE8C93"), Name = "На рассмотрении"});
-// bd.VacancyResponsesStatuses.Add(new VacancyResponseStatus() { Id = Guid.Parse("B1C14A35-7581-4056-A49A-B6245D364B44"), Name = "Не подходит"});
-// bd.VacancyResponsesStatuses.Add(new VacancyResponseStatus() { Id = Guid.Parse("F2B757AE-FA32-4FDC-A32D-9171DD14253C"), Name = "Приглашен на собеседование"});
 bd.SaveChanges();
 
 // Configure the HTTP request pipeline.
