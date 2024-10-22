@@ -15,8 +15,8 @@ const Header = ({title}: HeaderProps) => {
             <nav className="flex justify-center">
                 <ul className="flex justify-center space-x-2 md:space-x-4 lg:space-x-8 text-white md:flex-nowrap">
                     <li className="flex-grow text-xs md:text-base lg:text-lg"><Link to={MAIN_PAGE_ROUTE}>Вакансии</Link></li>
-                    <li className="flex-grow text-xs md:text-base lg:text-lg"><Link to={VACANCY_RESPOND_ROUTE}>Отклики на
-                        вакансии</Link></li>
+                    {(role === 'Student' || role === 'Admin') &&<li className="flex-grow text-xs md:text-base lg:text-lg"><Link to={VACANCY_RESPOND_ROUTE}>Отклики на
+                        вакансии</Link></li>}
                     {role === 'Student' &&
                         <li className="flex-grow text-xs md:text-base lg:text-lg"><Link to="/calendar">Календарь
                             собеседований</Link></li>}

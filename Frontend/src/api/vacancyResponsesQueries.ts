@@ -82,6 +82,7 @@ export type EditVacancyResponseBody = {
 }
 
 export const editVacancyResponse = async (body: EditVacancyResponseBody) => {
+
     const res = await fetch(`${API_URL}/Company/edit-vacancy-response-status`,
         {
             method: 'POST',
