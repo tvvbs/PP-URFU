@@ -5,10 +5,10 @@ namespace WebApplication1.Database;
 public class VacancyResponse
 {
     public Guid? Id { get; set; }
-    public Vacancy? Vacancy { get; set; }
+    public virtual Vacancy? Vacancy { get; set; }
     public string? Text { get; set; }
-    public File? Resume { get; set; }
-    public Student? Student { get; set; }
+    public virtual File? Resume { get; set; }
+    public virtual Student? Student { get; set; }
     public VacancyResponseStatus? Status { get; set; }
 }
 

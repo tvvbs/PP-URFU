@@ -7,5 +7,5 @@ public class Vacancy
     public string? PositionName { get; set; }
     public int? IncomeRub { get; set; }
     public string? Description { get; set; }
-    public Company? Company { get; set; }
+    public virtual Company? Company { get; set; }
 }
