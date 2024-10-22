@@ -1,6 +1,6 @@
 import {API_URL} from "../consts.ts";
 import {ApiErrorResponse} from "../types/ApiErrorResponse.ts";
-import {Interview} from "../types/Interview.ts";
+import {VacancyResponse} from "../types/VacancyResponse.ts";
 
 export type SendResumeBody = {
     token: string,
@@ -37,8 +37,25 @@ export type GetResponsesForStudentBody = {
     studentId: string
 }
 
-export const getInterviewsForStudent = async ({token, studentId}: GetResponsesForStudentBody): Promise<Interview[]> => {
-    const response = await fetch(`${API_URL}/Interview/get-all-for-student/${studentId}`, {
+export const getAllVacancyResponses = async ({token}: GetResponsesForStudentBody): Promise<VacancyResponse[]> => {
+    const response = await fetch(`${API_URL}/VacancyResponses/get-all`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (response.ok) {
+        return await response.json()
+    } else {
+        const res: ApiErrorResponse = await response.json();
+        throw new Error(res.detail);
+    }
+}
+
+export const getVacancyResponsesForStudent = async ({token, studentId}: GetResponsesForStudentBody): Promise<VacancyResponse[]> => {
+    const response = await fetch(`${API_URL}/VacancyResponses/get-all-for-student/${studentId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

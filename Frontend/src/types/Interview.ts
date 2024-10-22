@@ -1,5 +1,6 @@
 import {Vacancy} from "./Vacancy.ts";
 import {Student} from "./Student.ts";
+import {VacancyResponse} from "./VacancyResponse.ts";
 
 export type Interview = {
     id: string
@@ -8,11 +9,4 @@ export type Interview = {
     vacancyResponse: VacancyResponse
     dateTime: Date,
     result: 'Passed' | 'Failed' | 'Canceled' | 'DidNotCome'
-}
-
-export type VacancyResponse = {
-    id: string
-    vacancy?: Vacancy
-    student?: Student,
-    Status: 'Pending' | 'Declined' | 'InvitedToInterview'
 }

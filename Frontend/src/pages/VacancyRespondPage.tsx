@@ -1,7 +1,7 @@
 import {useAuth} from "../auth/AuthProvider.tsx";
 import Header from "../components/Header.tsx";
 import {useQuery} from "@tanstack/react-query";
-import {getInterviewsForStudent} from "../api/vacancyResponsesQueries.ts";
+import {getVacancyResponsesForStudent} from "../api/vacancyResponsesQueries.ts";
 import {Link} from "react-router-dom";
 import {MAIN_PAGE_ROUTE} from "../routes.tsx";
 
@@ -20,7 +20,7 @@ const StudentVacancyRespondComponent = () => {
     const {id, token} = useAuth();
 
     const query = useQuery({
-        queryFn: () => getInterviewsForStudent({studentId: id!, token: token!}),
+        queryFn: () => getVacancyResponsesForStudent({studentId: id!, token: token!}),
         queryKey: ['vacancy-responses', id]
     })
 
@@ -49,21 +49,21 @@ const StudentVacancyRespondComponent = () => {
                     {query?.data?.map((i) => (
                         <li key={i.id} className="py-4 flex justify-between">
                             <div>
-                                <p className="text-lg font-bold">{i.vacancyResponse.vacancy?.name}</p>
-                                <p className="text-gray-600">{i.vacancyResponse.Status}</p>
+                                <p className="text-lg font-bold">{i.vacancy.name}</p>
+                                <p className="text-gray-600">{i.Status}</p>
                             </div>
                             <div className="text-right">
-                                {i.vacancyResponse.Status === 'Pending' && (
+                                {i.Status === 'Pending' && (
                                     <span className="bg-yellow-100 text-yellow-800 py-1 px-2 rounded">
                             Ожидает ответа
                         </span>
                                 )}
-                                {i.vacancyResponse.Status === 'InvitedToInterview' && (
+                                {i.Status === 'InvitedToInterview' && (
                                     <span className="bg-green-100 text-green-800 py-1 px-2 rounded">
                             Приглашен на интервью
                         </span>
                                 )}
-                                {i.vacancyResponse.Status === 'Declined' && (
+                                {i.Status === 'Declined' && (
                                     <span className="bg-red-100 text-red-800 py-1 px-2 rounded">
                             Отклонено
                         </span>
