@@ -89,7 +89,7 @@ export const editVacancyResponse = async (body: EditVacancyResponseBody) => {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${body.token}`
             },
-            body: JSON.stringify({responseId: body.vacancyResponseId, status: body.newStatus, dateTime: body.interviewTime}),
+            body: JSON.stringify({responseId: body.vacancyResponseId, status: body.newStatus, dateTime: body.interviewTime?.toISOString()}),
         });
 
     if (!res.ok) {
