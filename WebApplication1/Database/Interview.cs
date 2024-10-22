@@ -6,9 +6,9 @@ namespace WebApplication1.Database;
 public class Interview
 {
     public Guid Id { get; set; }
-    public Vacancy Vacancy { get; set; }
-    public Student Student { get; set; }
-    public VacancyResponse VacancyResponse { get; set; }
+    public virtual Vacancy Vacancy { get; set; }
+    public virtual Student Student { get; set; }
+    public virtual VacancyResponse VacancyResponse { get; set; }
     public DateTime DateTime { get; set; } 
     
     public InterviewResult? Result { get; set; }
