@@ -80,7 +80,7 @@ var scope = app.Services.CreateScope();
 var bd = scope.ServiceProvider.GetService<PracticeDbContext>();
 bd.Database.Migrate();
 
-if (bd.Admins.Where(x => x.Login == "admin@admin").Any())
+if (!bd.Admins.Where(x => x.Login == "admin@admin").Any())
 {
     var admin = new Admin()
     {
