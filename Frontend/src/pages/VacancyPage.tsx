@@ -6,7 +6,6 @@ import {deleteVacancy, getVacancy, updateVacancy} from "../api/vacancionsQueries
 import {useParams} from "react-router";
 import {useNavigate} from "react-router-dom";
 import {Vacancy} from "../types/Vacancy.ts";
-import {ApiErrorResponse} from "../types/ApiErrorResponse.ts";
 import {MAIN_PAGE_ROUTE} from "../routes.tsx";
 import toast, {Toaster} from "react-hot-toast";
 import {sendResume} from "../api/vacancyResponsesQueries.ts";
@@ -21,8 +20,6 @@ const VacancyPage = () => {
 };
 
 const VacancyComponent = () => {
-    const [error, setError] = useState<string>();
-
     const {id: vacancyId} = useParams<{ id: string }>();
     const {token, role} = useAuth();
 
@@ -40,8 +37,8 @@ const VacancyComponent = () => {
                 navigate(MAIN_PAGE_ROUTE);
             }, 1500);
         },
-        onError: (error: ApiErrorResponse) => {
-            setError(error.detail)
+        onError: () => {
+            toast.error("Не удалось удалить вакансию");
         }
     })
 
@@ -101,7 +98,6 @@ const VacancyComponent = () => {
                                 {vacancy?.company?.name || 'Не указано'}
                             </p>
                         </div>
-                        {error && <p className="text-red-500">{error}</p>}
                     </div>
 
                     {role === 'Admin' && (

@@ -8,7 +8,7 @@ export type Interview = {
     student: Student
     vacancyResponse: VacancyResponse
     dateTime: Date,
-    result?: InterviewResult
+    result: InterviewResult | null
 }
 
 export enum InterviewResult {
