@@ -1,5 +1,11 @@
 import {Link} from "react-router-dom";
-import {CREATE_VACANCY_ROUTE, MAIN_PAGE_ROUTE, PROFILE_ROUTE, VACANCY_RESPOND_ROUTE} from "../routes.tsx";
+import {
+    CREATE_VACANCY_ROUTE,
+    INTERVIEW_CALENDAR_ROUTE,
+    MAIN_PAGE_ROUTE,
+    PROFILE_ROUTE,
+    VACANCY_RESPOND_ROUTE
+} from "../routes.tsx";
 import {useAuth} from "../auth/AuthProvider.tsx";
 
 type HeaderProps = {
@@ -18,7 +24,7 @@ const Header = ({title}: HeaderProps) => {
                     {(role === 'Student' || role === 'Admin') &&<li className="flex-grow text-xs md:text-base lg:text-lg"><Link to={VACANCY_RESPOND_ROUTE}>Отклики на
                         вакансии</Link></li>}
                     {role === 'Student' &&
-                        <li className="flex-grow text-xs md:text-base lg:text-lg"><Link to="/calendar">Календарь
+                        <li className="flex-grow text-xs md:text-base lg:text-lg"><Link to={INTERVIEW_CALENDAR_ROUTE}>Календарь
                             собеседований</Link></li>}
                     {(role === 'Student' || role === 'Company') && <li className="flex-grow text-xs md:text-base lg:text-lg"><Link to={PROFILE_ROUTE}>Личный кабинет</Link></li>}
                     {role === 'Admin' &&

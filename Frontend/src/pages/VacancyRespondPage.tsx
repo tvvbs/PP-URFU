@@ -94,14 +94,12 @@ const AdminVacancyRespondComponent = () => {
         try {
             const url = URL.createObjectURL(new Blob([file.data], { type: 'application/octet-stream' }));
 
-            // Create a link element and trigger the download
             const link = document.createElement('a');
             link.href = url;
             link.download = file.name;
             document.body.appendChild(link);
             link.click(); // Trigger the download
 
-            // Clean up the URL object and remove the link element
             URL.revokeObjectURL(url);
             document.body.removeChild(link); // Remove link element
         } catch (error) {
@@ -165,11 +163,11 @@ const AdminVacancyRespondComponent = () => {
         <div>
             <ul className="divide-y divide-gray-200">
                 {query.data?.map((i) => {
-                    console.log(i.resume);
                     return (<li key={i.id} className="py-4 flex justify-between md:py-6 lg:py-8">
                         <div>
                             <p className="text-lg font-bold md:text-xl lg:text-2xl">Вакансия: {i.vacancy.name}</p>
                             <p>Студент: {i.student.name} {i.student.surname}</p>
+                            <p>Письмо студента: {i.text}</p>
                             <button onClick={() => handleDownload(i.resume)}>Скачать резюме кандидата</button>
                         </div>
                         <div className="text-right">

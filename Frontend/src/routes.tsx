@@ -8,6 +8,7 @@ import ProfilePage from "./pages/ProfilePage.tsx";
 import CreateVacancyPage from "./pages/CreateVacancyPage.tsx";
 import VacancyPage from "./pages/VacancyPage.tsx";
 import VacancyRespondPage from "./pages/VacancyRespondPage.tsx";
+import InterviewCalendarPage from "./pages/InterviewCalendarPage.tsx";
 
 export const MAIN_PAGE_ROUTE = "/"
 export const NOT_AUTHENTICATED_ROUTE = '/not-authenticated'
@@ -18,6 +19,7 @@ export const VACANCIES_ROUTE = '/vacancies'
 export const CREATE_VACANCY_ROUTE = '/vacancies/create'
 export const VACANCY_ROUTE = '/vacancies/:id'
 export const VACANCY_RESPOND_ROUTE = '/vacancies-respond'
+export const INTERVIEW_CALENDAR_ROUTE = '/interview-calendar'
 
 export const router = createBrowserRouter([
     {
@@ -56,5 +58,11 @@ export const router = createBrowserRouter([
         path: VACANCY_RESPOND_ROUTE,
         element: <ProtectedRoute
             allowed_roles={['Student', 'Admin']}><VacancyRespondPage/></ProtectedRoute>
+    },
+    {
+        path: INTERVIEW_CALENDAR_ROUTE,
+        element: <ProtectedRoute allowed_roles={['Student']}>
+            <InterviewCalendarPage/>
+        </ProtectedRoute>
     }
 ])
