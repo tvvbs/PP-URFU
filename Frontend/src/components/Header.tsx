@@ -1,5 +1,6 @@
 import {Link} from "react-router-dom";
 import {
+    AdMIN_INTERVIEWS_ROUTE,
     CREATE_VACANCY_ROUTE,
     INTERVIEW_CALENDAR_ROUTE,
     MAIN_PAGE_ROUTE,
@@ -30,6 +31,7 @@ const Header = ({title}: HeaderProps) => {
                     {role === 'Admin' &&
                         <li className="flex-grow text-xs md:text-base lg:text-lg"><Link to={CREATE_VACANCY_ROUTE}>Создать
                             вакансию</Link></li>}
+                    {role === 'Admin' && <Link to={AdMIN_INTERVIEWS_ROUTE}>Интервью</Link>}
                     <li className="flex-grow text-xs md:text-base lg:text-lg">
                         <button className='bg-red-500 px-3 py-1 rounded-md text-xs md:text-base lg:text-lg'
                                 onClick={async () => await handleLogout()}>

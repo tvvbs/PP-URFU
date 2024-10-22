@@ -8,5 +8,12 @@ export type Interview = {
     student: Student
     vacancyResponse: VacancyResponse
     dateTime: Date,
-    result: 'Passed' | 'Failed' | 'Canceled' | 'DidNotCome'
+    result?: InterviewResult
+}
+
+export enum InterviewResult {
+    Passed = 0,
+    Failed = 1,
+    Canceled = 2,
+    DidNotCome = 3
 }
