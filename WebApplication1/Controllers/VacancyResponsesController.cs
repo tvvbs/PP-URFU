@@ -20,4 +20,22 @@ public class VacancyResponsesController : MyController
       {
             return Results.Ok(_dbContext.VacancyResponses.Include(x => x.Vacancy).Include(x => x.Student).Include(x => x.Resume).IncludeAllRecursively().ToList());
       }
+      
+      // all for student 
+      [HttpGet("get-for-student/{studentId:guid}")]
+      [Authorize]
+      [ProducesResponseType(200, Type = typeof(List<VacancyResponse>))]
+      public IResult GetAll(Guid? studentId)
+      {
+            if (studentId is null)
+            {
+                  return Results.BadRequest("нужно указать id студента");
+            }
+            var student = _dbContext.Students.FirstOrDefault(x => x.Id == studentId);
+            if (student is null)
+            {
+                  return Results.BadRequest("Студент не найден");
+            }
+            return Results.Ok(_dbContext.VacancyResponses.Include(x => x.Vacancy).Include(x => x.Student).Include(x => x.Resume).IncludeAllRecursively().Where(x => x.Student.Id == studentId).ToList());
+      }
 }
