@@ -3,6 +3,7 @@ import {Link} from 'react-router-dom'
 import {LOGIN_ROUTE} from "../routes.tsx";
 import {register_company, register_student} from "../auth/auth.ts";
 import {useNavigate} from "react-router-dom";
+import toast from "react-hot-toast";
 
 const RegistrationPage = () => {
     const [isStudent, setIsStudent] = useState(true);
@@ -13,7 +14,6 @@ const RegistrationPage = () => {
     const [surname, setSurname] = useState('');
     const [patronymic, setPatronymic] = useState('');
     const [companyName, setCompanyName] = useState('');
-    const [error, setError] = useState<string>();
 
     const navigate = useNavigate()
 
@@ -21,16 +21,18 @@ const RegistrationPage = () => {
         if (isStudent) {
             const res = await register_student(email, password, passwordConfirmation, name, surname, patronymic);
             if (res.success) {
+                toast.success("Аккаунт успешно создан")
                 navigate(LOGIN_ROUTE)
             } else {
-                setError(res.error?.detail)
+                toast.error("Не удалось создать аккаунт")
             }
         } else {
             const res = await register_company(email, password, passwordConfirmation, companyName)
             if (res.success) {
+                toast.success("Аккаунт успешно создан")
                 navigate(LOGIN_ROUTE)
             } else {
-                setError(res.error?.detail)
+                toast.error("Не удалось создать аккаунт")
             }
         }
     }
@@ -136,7 +138,6 @@ const RegistrationPage = () => {
                         Зарегистироваться
                     </button>
                     <Link to={LOGIN_ROUTE} className='mt-5 inline-block self-center'>Уже есть аккаунт? Войти</Link>
-                    {error && <p className="text-red-500 self-center">{error}</p>}
                 </form>
             </div>
         </main>

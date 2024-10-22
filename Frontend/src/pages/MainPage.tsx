@@ -1,10 +1,10 @@
 import { useState } from "react";
 import Header from "../components/Header.tsx";
 import { useQuery } from "@tanstack/react-query";
-import { getVacancies } from "../api/vacansionsQueries.ts";
 import { Link } from "react-router-dom";
 import { VACANCIES_ROUTE } from "../routes.tsx";
 import { useAuth } from "../auth/AuthProvider.tsx";
+import {getVacancies} from "../api/vacancionsQueries.ts";
 
 const MainPage = () => {
     return (

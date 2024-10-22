@@ -2,9 +2,9 @@ import React, {useEffect, useState} from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import {useAuth} from "../auth/AuthProvider.tsx";
 import {getCompanies} from "../api/companyQueries.ts";
-import {createVacancy} from "../api/vacancyQueries.ts";
+import {createVacancy} from "../api/vacancionsQueries.ts";
 import Header from "../components/Header.tsx";
-import {useNavigate} from "react-router-dom";
+import toast from "react-hot-toast";
 
 const CreateVacancy = () => {
     const {token} = useAuth();
@@ -15,17 +15,25 @@ const CreateVacancy = () => {
     const [description, setDescription] = useState('');
     const [companyId, setCompanyId] = useState('');
 
-    const [error, setError] = useState<string>();
-
-    const navigate = useNavigate()
-
     const { data: companies, isLoading: isCompaniesLoading } = useQuery({
         queryKey: ['companies'],
         queryFn: () => getCompanies(token!),
     });
 
-    const { mutateAsync, isPending: isCreating } = useMutation({
-        mutationFn: () => createVacancy(token!, name, description, positionName, incomeRub, companyId)
+    const createVacancyMutation = useMutation({
+        mutationFn: () =>
+            createVacancy(token!, name, description, positionName, incomeRub, companyId),
+        onSuccess: () => {
+            toast.success('Вакансия создана');
+            setName('')
+            setPositionName('')
+            setIncomeRub('')
+            setDescription('')
+            setCompanyId('')
+        },
+        onError: () => {
+            toast.error('Не удалось создать вакансию');
+        }
     });
 
     useEffect(() => {
@@ -36,12 +44,7 @@ const CreateVacancy = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const res = await mutateAsync();
-        if (res) {
-            setError(res.detail)
-        } else {
-            navigate(0)
-        }
+        createVacancyMutation.mutate()
     };
 
     if (isCompaniesLoading) {
@@ -124,11 +127,10 @@ const CreateVacancy = () => {
                 <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     type="submit"
-                    disabled={isCreating}
+                    disabled={createVacancyMutation.isPending}
                 >
-                    {isCreating ? 'Идет создание вакансии' : 'Создать вакансию'}
+                    {createVacancyMutation.isPending ? 'Идет создание вакансии' : 'Создать вакансию'}
                 </button>
-                {error && <p className="text-red-500">{error}</p>}
             </form>
         </main>
     );

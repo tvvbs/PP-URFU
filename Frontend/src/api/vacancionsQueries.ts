@@ -2,6 +2,23 @@ import {ApiErrorResponse} from "../types/ApiErrorResponse.ts";
 import {API_URL} from "../consts.ts";
 import {Vacancy} from "../types/Vacancy.ts";
 
+export const getVacancies= async (token: string): Promise<Vacancy[]> => {
+    const response = await fetch(`${API_URL}/Vacancy/all`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (response.ok) {
+        return await response.json()
+    } else {
+        const res: ApiErrorResponse = await response.json();
+        throw new Error(res.detail);
+    }
+}
+
 export const createVacancy =
     async (token: string, name: string, description: string,
            positionName: string, incomeRub: string, companyId: string):

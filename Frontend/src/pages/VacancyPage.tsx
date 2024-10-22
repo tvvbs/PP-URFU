@@ -1,13 +1,15 @@
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import Header from "../components/Header.tsx";
 import {useAuth} from "../auth/AuthProvider.tsx";
 import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
-import {deleteVacancy, getVacancy, updateVacancy} from "../api/vacancyQueries.ts";
+import {deleteVacancy, getVacancy, updateVacancy} from "../api/vacancionsQueries.ts";
 import {useParams} from "react-router";
 import {useNavigate} from "react-router-dom";
 import {Vacancy} from "../types/Vacancy.ts";
 import {ApiErrorResponse} from "../types/ApiErrorResponse.ts";
 import {MAIN_PAGE_ROUTE} from "../routes.tsx";
+import toast, {Toaster} from "react-hot-toast";
+import {sendResume} from "../api/vacancyResponsesQueries.ts";
 
 const VacancyPage = () => {
     return (
@@ -30,10 +32,13 @@ const VacancyComponent = () => {
         queryFn: () => getVacancy(token!, vacancyId!),
         queryKey: ['vacancy', vacancyId],
     });
-    const mutation = useMutation({
+    const deleteVacancyMutation = useMutation({
         mutationFn: () => deleteVacancy({token: token!, vacancyId: vacancyId!}),
         onSuccess: () => {
-            navigate(MAIN_PAGE_ROUTE);
+            toast.success("Вакансия успешно удалена");
+            setTimeout(() => {
+                navigate(MAIN_PAGE_ROUTE);
+            }, 1500);
         },
         onError: (error: ApiErrorResponse) => {
             setError(error.detail)
@@ -108,13 +113,16 @@ const VacancyComponent = () => {
                                 Редактировать
                             </button>
                             <button
-                                onClick={() => mutation.mutate()}
-                                disabled={mutation.isPending}
+                                onClick={() => deleteVacancyMutation.mutate()}
+                                disabled={deleteVacancyMutation.isPending}
                                 className="mt-4 bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-700"
                             >
                                 Удалить
                             </button>
                         </div>
+                    )}
+                    {role === 'Student' && (
+                        <ResumeSender vacancyId={vacancy!.id}/>
                     )}
                 </>
             ) : (
@@ -132,15 +140,12 @@ type VacancyEditFormProps = {
 // Edit form component
 const VacancyEditForm = ({vacancy, setIsEditing}: VacancyEditFormProps) => {
     const {token} = useAuth();
-    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         name: vacancy.name,
         positionName: vacancy.positionName,
         incomeRub: vacancy.incomeRub,
         description: vacancy.description,
     });
-
-    const [error, setError] = useState<string>();
 
     const queryClient = useQueryClient();
     const mutation = useMutation({
@@ -156,12 +161,13 @@ const VacancyEditForm = ({vacancy, setIsEditing}: VacancyEditFormProps) => {
                 companyId: vacancy.company?.id || ''
             })
         },
-        onSuccess: () => {
-            queryClient.invalidateQueries({queryKey: ['vacancy', vacancy.id]})
-            navigate(0)
+        onSuccess: async () => {
+            toast.success("Вакансия успешно обновлена");
+            setIsEditing(false)
+            await queryClient.invalidateQueries({queryKey: ['vacancy', vacancy.id]})
         },
-        onError: (error: ApiErrorResponse) => {
-            setError(error.detail);
+        onError: () => {
+            toast.error("Не удалось обновить вакансию")
         },
     });
 
@@ -245,8 +251,91 @@ const VacancyEditForm = ({vacancy, setIsEditing}: VacancyEditFormProps) => {
                     Отменить
                 </button>
             </div>
+        </form>
+    );
+};
 
-            {error && <p className="text-red-500">{error}</p>}
+
+interface ResumeSenderProps {
+    vacancyId: string;
+}
+
+const ResumeSender = ({vacancyId}: ResumeSenderProps) => {
+    const {token, id} = useAuth();
+    const [message, setMessage] = useState('');
+    const [file, setFile] = useState<File | null>(null);
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const queryClient = useQueryClient();
+    const mutation = useMutation({
+        mutationFn: () => sendResume({
+            token: token!,
+            studentId: id!,
+            vacancyId: vacancyId,
+            text: message,
+            file: file!,
+        })
+        ,
+        onSuccess: async () => {
+            setMessage('');
+            setFile(null);
+            fileInputRef.current!.value = '';
+            toast.success("Резюме успешно отправлено");
+            await queryClient.invalidateQueries({queryKey: ['vacancy-responses', id]})
+        },
+        onError: () => {
+            toast.error("Не удалось отправить резюме");
+        },
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        mutation.mutate();
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="bg-gray-50 p-4 rounded-lg shadow-md">
+            <Toaster toastOptions={{duration: 2000}}/>
+            <h2 className='text-xl font-bold'>Добавить резюме</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                <div className="mb-6">
+                    <label className="block text-gray-700 font-semibold mb-2" htmlFor="message">
+                        Сообщение
+                    </label>
+                    <textarea
+                        id="message"
+                        name="message"
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        className="w-full border border-gray-300 p-2 rounded"
+                        rows={4}
+                        required
+                    />
+                </div>
+                <div className="mb-6">
+                    <label className="block text-gray-700 font-semibold mb-2" htmlFor="file">
+                        Резюме
+                    </label>
+                    <input
+                        type="file"
+                        id="file"
+                        name="file"
+                        onChange={(e) => setFile(e.target.files![0])}
+                        className="w-full border border-gray-300 p-2 rounded"
+                        required
+                        ref={fileInputRef}
+                    />
+                </div>
+            </div>
+            <div className="flex space-x-4">
+                <button
+                    type="submit"
+                    className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700"
+                >
+                    Отправить
+                </button>
+            </div>
         </form>
     );
 };

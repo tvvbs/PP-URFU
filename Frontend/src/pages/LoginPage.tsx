@@ -4,13 +4,13 @@ import { useAuth } from "../auth/AuthProvider.tsx";
 import { useNavigate } from 'react-router'
 import {MAIN_PAGE_ROUTE, SIGN_UP_ROUTE} from "../routes.tsx";
 import {Link} from 'react-router-dom'
+import toast from "react-hot-toast";
 
 
 const LoginPage = () => {
     const [email, setEmail] = useState<string>("")
     const [password, setPassword] = useState<string>("")
     const [role, setRole] = useState<Role>('Student')
-    const [error, setError] = useState<string>()
 
     const navigate = useNavigate()
 
@@ -19,16 +19,16 @@ const LoginPage = () => {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         try {
             event.preventDefault()
-            setError(undefined)
             const loginResult = await handleLogin(email, password, role)
             if (loginResult.success) {
+                toast.success("Вы успешно вошли")
                 navigate(MAIN_PAGE_ROUTE)
             } else {
-                setError(loginResult.error!.detail)
+                toast.error(loginResult.error?.detail || 'Не удалось войти в аккаунт')
             }
 
         } catch {
-            setError('Что-то пошло не так')
+            toast.error("Не удалось войти в аккаунт")
         }
     }
 
@@ -50,7 +50,6 @@ const LoginPage = () => {
                 </select>
                 <button type="submit"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded-md self-center">Войти</button>
-                {error && <p className="text-red-600 mt-4 self-center">{error}</p>}
                 <Link to={SIGN_UP_ROUTE} className='self-center inline-block mt-3'>Нет аккаунта? Зарегистрируйтесь</Link>
             </form>
         </main>
