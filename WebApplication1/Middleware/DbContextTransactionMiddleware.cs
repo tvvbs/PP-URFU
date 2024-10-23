@@ -17,12 +17,12 @@ public class DbContextTransactionMiddleware
 
         if (context.Request.Path.Value != null && (context.Request.Path.Value.Contains("get-") || context.Request.Path.Value.Contains("all")))
         {
-            Console.WriteLine("oiu");
+            Console.WriteLine("SKIP SKIP SKIP SKIP SKIP SKIP SKIP SKIP SKIP ");
             await _next(context);
             return;
         }
 
-        Console.WriteLine("oeuihtn");
+        Console.WriteLine("NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO ");
         // create middleware for transactions
         await using var transaction = await dbContext.Database.BeginTransactionAsync();
         
