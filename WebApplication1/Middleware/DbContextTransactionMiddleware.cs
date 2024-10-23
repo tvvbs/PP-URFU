@@ -28,6 +28,7 @@ public class DbContextTransactionMiddleware
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Exception: {ex.Message}");
             Console.ResetColor();
+            throw;
         }
     }
 }

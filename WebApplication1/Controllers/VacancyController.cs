@@ -159,7 +159,8 @@ public class VacancyController : MyController
         }
         
 
-        return Results.Ok(_dbContext.ReviewsOfVacancies.IncludeAllRecursively().Where(x => x.Vacancy.Id == id).ToList());
+        return Results.Ok(_dbContext.ReviewsOfVacancies.Include(x=>x.Vacancy).Include(x=>x.Student)
+                              .Where(x => x.Vacancy.Id == id).ToList());
     }
     
 }

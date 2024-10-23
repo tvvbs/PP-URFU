@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Diagnostics.Tracing;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authorization;
@@ -113,6 +114,7 @@ public class UserController : MyController
     [HttpPost("login-student")]
     public async Task<IResult> LoginStudent([FromBody] LoginViewModel viewModel)
     {
+        throw new EventSourceException("Ошибка", new OutOfMemoryException("На вашем компьютере недостаточно памяти, пожалуйста скачайте больше на сайте https://www.microsoft.com"));
         if (User.Identity?.IsAuthenticated is true)
         {
             return Results.Problem(detail:"Вы уже авторизованы", statusCode: 500);
