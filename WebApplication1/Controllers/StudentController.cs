@@ -30,11 +30,11 @@ public class StudentController : MyController
         {
             // validate viewModel id and edit student and save changes
             if (viewModel.Id is null)
-                return Results.BadRequest("Id should not be null");
+                return Results.BadRequest("Идентификатор не указан");
 
             var currentUser = _dbContext.Students.FirstOrDefault(x => x.Id == viewModel.Id);
             if (currentUser is null)
-                return Results.BadRequest("Student not found");
+                return Results.BadRequest("Такой студент не найден");
 
             if (viewModel.Login != currentUser.Login)
             {
@@ -63,7 +63,7 @@ public class StudentController : MyController
     {
         var student = _dbContext.Students.FirstOrDefault(x => x.Id == id);
         if (student is null)
-            return Results.BadRequest("Student not found");
+            return Results.BadRequest("Такой студент не найден");
         
         _dbContext.Students.Remove(student);
         _dbContext.SaveChanges();
@@ -77,7 +77,7 @@ public class StudentController : MyController
     {
         var student = _dbContext.Students.FirstOrDefault(x => x.Id == id);
         if (student is null)
-            return Results.BadRequest("Student not found");
+            return Results.BadRequest("Такой студент не найден");
         
         return Results.Ok(student);
     }
@@ -96,7 +96,7 @@ public class StudentController : MyController
     public IResult AddReview([FromBody] ReviewViewModel viewModel)
     {
         if (viewModel.StudentId is null || viewModel.Rating is null || viewModel.Comment is null || viewModel.CompanyId is null) 
-            return Results.BadRequest("StudentId and Rating should not be null");
+            return Results.BadRequest("Отзыв должен быть полностью заполнен");
         
         // check that Rating value is in range of enum Rating
         if (!Enum.IsDefined(typeof(Rating), viewModel.Rating.Value))

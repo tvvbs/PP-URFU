@@ -30,7 +30,7 @@ public class NotificationsController : MyController
     {
         var notification = _dbContext.Notifications.FirstOrDefault(x => x.Id == id);
         if (notification is null)
-            return Results.BadRequest("Notification not found");
+            return Results.BadRequest("Уведомление не найдено");
         
         notification.IsRead = true;
         _dbContext.SaveChanges();

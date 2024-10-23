@@ -39,7 +39,7 @@ public class VacancyController : MyController
     {
         var vacancy = _dbContext.Vacancies.Include((x) => x.Company).IncludeAllRecursively().FirstOrDefault(x => x.Id == id);
         if (vacancy is null)
-            return Results.BadRequest("Vacancy not found");
+            return Results.BadRequest("Вакансия с таким идентификатором не найдена");
         
         return Results.Ok(vacancy);
     }
@@ -49,11 +49,11 @@ public class VacancyController : MyController
     public IResult CreateVacancy([FromBody] VacancyViewModel viewModel)
     {
         if (viewModel.Id is not null)
-            return Results.BadRequest("Id should be null");
+            return Results.BadRequest("Идентификатор вакансии не указан");
         
         if (viewModel.Name is null || viewModel.PositionName is null || viewModel.IncomeRub is null || viewModel.Description is null)
         {
-            return Results.BadRequest();
+            return Results.BadRequest("Вы должны заполнить все данные о вакансии");
         }
         var company = _dbContext.Companies.First(x=> x.Id == viewModel.CompanyId);
         var vacancy = new Vacancy()
@@ -93,7 +93,7 @@ public class VacancyController : MyController
     public IResult EditVacancy([FromBody] VacancyViewModel viewModel)
     {
         if (viewModel.Id is null)
-            return Results.BadRequest("Id should not be null");
+            return Results.BadRequest("Не указан идентификатор вакансии");
         
         var vacancy = _dbContext.Vacancies.First(x => x.Id == viewModel.Id);
         vacancy.Name = viewModel.Name;
@@ -120,7 +120,7 @@ public class VacancyController : MyController
     public IResult AddReview([FromBody] AddRwReviewViewModel viewModel)
     {
         if (viewModel.VacancyId is null || viewModel.Rating is null || viewModel.Comment is null || viewModel.StudentId is null) 
-            return Results.BadRequest("VacancyId and Rating should not be null");
+            return Results.BadRequest("Отзыв должен быть полностью заполнен");
         
         // check that Rating value is in range of enum Rating
         if (!Enum.IsDefined(typeof(Rating), viewModel.Rating.Value))

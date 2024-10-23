@@ -32,7 +32,7 @@ public class CompanyController : MyController
     {
         var company =_dbContext.Companies.FirstOrDefault(x => x.Id == id);
         if (company is null)
-            return Results.BadRequest("Company not found");
+            return Results.BadRequest("Компания не найдена");
         
         return Results.Ok(company);
     }
@@ -43,11 +43,11 @@ public class CompanyController : MyController
     public IResult EditCompany([FromBody] CompanyViewModel viewModel)
     {
         if (viewModel.Id is null)
-            return Results.BadRequest("Id should not be null");
+            return Results.BadRequest("Не указан идентификатор");
         
         var company = _dbContext.Companies.FirstOrDefault(x => x.Id == viewModel.Id);
         if (company is null)
-            return Results.BadRequest("Company not found");
+            return Results.BadRequest("Компания не найдена");
         
         company.Name = viewModel.Name;
         company.Login = viewModel.Login;
@@ -80,11 +80,11 @@ public class CompanyController : MyController
     {
         var student = _dbContext.Students.IncludeAllRecursively().FirstOrDefault(x => x.Id == vacancyResponse.StudentId);
         if (student is null)
-            return Results.BadRequest("Student not found");
+            return Results.BadRequest("Студент не найден");
         
         var vacancy = _dbContext.Vacancies.IncludeAllRecursively().FirstOrDefault(x => x.Id == vacancyResponse.VacancyId);
         if (vacancy is null)
-            return Results.BadRequest("Vacancy not found");
+            return Results.BadRequest("Вакансия не найдена");
         
         var response = new VacancyResponse
         {
@@ -115,7 +115,7 @@ public class CompanyController : MyController
     {
         var response = _dbContext.VacancyResponses.IncludeAllRecursively().FirstOrDefault(x => x.Id == viewModel.ResponseId);
         if (response is null)
-            return Results.BadRequest("Response not found");
+            return Results.BadRequest("Отклик не найден");
         
         if (response.Status == VacancyResponseStatus.InvitedToInterview)
         {

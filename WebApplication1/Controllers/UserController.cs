@@ -159,10 +159,10 @@ public class UserController : MyController
             nameof(Student) => _dbContext.Students.FirstOrDefault(x => x.Login == login && x.Password == password)?.Id,
             nameof(Company) => _dbContext.Companies.FirstOrDefault(x => x.Login == login && x.Password == password)?.Id,
             nameof(Admin) => _dbContext.Admins.FirstOrDefault(x => x.Login == login && x.Password == password)?.Id,
-            _ => throw new Exception("Invalid role")
+            _ => throw new Exception("Не верная роль")
         };
         if (id is null)
-            throw new Exception("User not found");
+            throw new Exception("Пользователь не найден");
         
         var loginClaim = new Claim(ClaimsIdentity.DefaultNameClaimType, login);
         var roleClaim = new Claim(ClaimTypes.Role, role);
@@ -209,10 +209,10 @@ public class UserController : MyController
     {
         var role = User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Role)?.Value;
         if (role is null)
-            return Results.Problem("Role not found", statusCode: 500);
+            return Results.Problem("Ошибка в токене авторизации попробуйте перезайти в аккаунт", statusCode: 500);
         var id = User.Claims.FirstOrDefault(x => x.Type == "id")?.Value;
         if (id is null)
-            return Results.Problem("Id not found", statusCode: 500);
+            return Results.Problem("Ошибка в токене авторизации попробуйте перезайти в аккаунт", statusCode: 500);
         
         return Results.Ok(new {role, id});
     }
