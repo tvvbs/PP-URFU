@@ -15,11 +15,14 @@ public class DbContextTransactionMiddleware
     public async Task InvokeAsync(HttpContext context, PracticeDbContext dbContext, ILogger<DbContextTransactionMiddleware> logger)
     {
 
-        if (context.Request.Path.Value != null && context.Request.Path.Value.Contains("VacancyResponse/get-all"))
+        if (context.Request.Path.Value != null && context.Request.Path.Value.Contains("VacancyResponses/get-all"))
         {
+            Console.WriteLine("oiu");
             await _next(context);
             return;
         }
+
+        Console.WriteLine("oeuihtn");
         // create middleware for transactions
         await using var transaction = await dbContext.Database.BeginTransactionAsync();
         
