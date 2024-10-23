@@ -39,7 +39,7 @@ public class VacancyController : MyController
     {
         var vacancy = _dbContext.Vacancies.Include((x) => x.Company).IncludeAllRecursively().FirstOrDefault(x => x.Id == id);
         if (vacancy is null)
-            return Results.BadRequest("Вакансия с таким идентификатором не найдена");
+            return Results.Problem("Вакансия с таким идентификатором не найдена");
         
         return Results.Ok(vacancy);
     }
@@ -49,11 +49,11 @@ public class VacancyController : MyController
     public IResult CreateVacancy([FromBody] VacancyViewModel viewModel)
     {
         if (viewModel.Id is not null)
-            return Results.BadRequest("Идентификатор вакансии не указан");
+            return Results.Problem("Идентификатор вакансии не указан");
         
         if (viewModel.Name is null || viewModel.PositionName is null || viewModel.IncomeRub is null || viewModel.Description is null)
         {
-            return Results.BadRequest("Вы должны заполнить все данные о вакансии");
+            return Results.Problem("Вы должны заполнить все данные о вакансии");
         }
         var company = _dbContext.Companies.First(x=> x.Id == viewModel.CompanyId);
         var vacancy = new Vacancy()
@@ -93,7 +93,7 @@ public class VacancyController : MyController
     public IResult EditVacancy([FromBody] VacancyViewModel viewModel)
     {
         if (viewModel.Id is null)
-            return Results.BadRequest("Не указан идентификатор вакансии");
+            return Results.Problem("Не указан идентификатор вакансии");
         
         var vacancy = _dbContext.Vacancies.First(x => x.Id == viewModel.Id);
         vacancy.Name = viewModel.Name;
@@ -120,17 +120,17 @@ public class VacancyController : MyController
     public IResult AddReview([FromBody] AddRwReviewViewModel viewModel)
     {
         if (viewModel.VacancyId is null || viewModel.Rating is null || viewModel.Comment is null || viewModel.StudentId is null) 
-            return Results.BadRequest("Отзыв должен быть полностью заполнен");
+            return Results.Problem("Отзыв должен быть полностью заполнен");
         
         // check that Rating value is in range of enum Rating
         if (!Enum.IsDefined(typeof(Rating), viewModel.Rating.Value))
-            return Results.BadRequest("Неверное значение рейтинга");
+            return Results.Problem("Неверное значение рейтинга");
         
         // check that student had internship in this company
         var internship = _dbContext.Internships.IncludeAllRecursively()
             .FirstOrDefault(x => x.Student.Id == viewModel.StudentId && x.Vacancy.Id == viewModel.VacancyId);
         if (internship is null)
-            return Results.BadRequest("Студент не проходил стажировку в этой компании");
+            return Results.Problem("Студент не проходил стажировку в этой компании");
         
         
         // add review to database

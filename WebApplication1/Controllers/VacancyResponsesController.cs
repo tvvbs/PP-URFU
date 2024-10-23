@@ -29,12 +29,12 @@ public class VacancyResponsesController : MyController
       {
             if (studentId is null)
             {
-                  return Results.BadRequest("нужно указать id студента");
+                  return Results.Problem("нужно указать id студента");
             }
             var student = _dbContext.Students.FirstOrDefault(x => x.Id == studentId);
             if (student is null)
             {
-                  return Results.BadRequest("Студент не найден");
+                  return Results.Problem("Студент не найден");
             }
             return Results.Ok(_dbContext.VacancyResponses.Include(x => x.Vacancy).Include(x => x.Student).Include(x => x.Resume).IncludeAllRecursively().Where(x => x.Student.Id == studentId).ToList());
       }

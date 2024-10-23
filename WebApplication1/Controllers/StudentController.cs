@@ -30,11 +30,11 @@ public class StudentController : MyController
         {
             // validate viewModel id and edit student and save changes
             if (viewModel.Id is null)
-                return Results.BadRequest("Идентификатор не указан");
+                return Results.Problem("Идентификатор не указан");
 
             var currentUser = _dbContext.Students.FirstOrDefault(x => x.Id == viewModel.Id);
             if (currentUser is null)
-                return Results.BadRequest("Такой студент не найден");
+                return Results.Problem("Такой студент не найден");
 
             if (viewModel.Login != currentUser.Login)
             {
@@ -63,7 +63,7 @@ public class StudentController : MyController
     {
         var student = _dbContext.Students.FirstOrDefault(x => x.Id == id);
         if (student is null)
-            return Results.BadRequest("Такой студент не найден");
+            return Results.Problem("Такой студент не найден");
         
         _dbContext.Students.Remove(student);
         _dbContext.SaveChanges();
@@ -77,7 +77,7 @@ public class StudentController : MyController
     {
         var student = _dbContext.Students.FirstOrDefault(x => x.Id == id);
         if (student is null)
-            return Results.BadRequest("Такой студент не найден");
+            return Results.Problem("Такой студент не найден");
         
         return Results.Ok(student);
     }
@@ -96,17 +96,17 @@ public class StudentController : MyController
     public IResult AddReview([FromBody] ReviewViewModel viewModel)
     {
         if (viewModel.StudentId is null || viewModel.Rating is null || viewModel.Comment is null || viewModel.CompanyId is null) 
-            return Results.BadRequest("Отзыв должен быть полностью заполнен");
+            return Results.Problem("Отзыв должен быть полностью заполнен");
         
         // check that Rating value is in range of enum Rating
         if (!Enum.IsDefined(typeof(Rating), viewModel.Rating.Value))
-            return Results.BadRequest("Неверное значение рейтинга");
+            return Results.Problem("Неверное значение рейтинга");
         
         // check that student had internship in this company
         var internship = _dbContext.Internships.IncludeAllRecursively()
             .FirstOrDefault(x => x.Student.Id == viewModel.StudentId && x.Vacancy.Company.Id == viewModel.CompanyId);
         if (internship is null)
-            return Results.BadRequest("Студент не проходил стажировку в этой компании");
+            return Results.Problem("Студент не проходил стажировку в этой компании");
         
         // add review to database
         var review = new ReviewOfStudent()

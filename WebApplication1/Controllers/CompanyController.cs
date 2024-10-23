@@ -32,7 +32,7 @@ public class CompanyController : MyController
     {
         var company =_dbContext.Companies.FirstOrDefault(x => x.Id == id);
         if (company is null)
-            return Results.BadRequest("Компания не найдена");
+            return Results.Problem("Компания не найдена");
         
         return Results.Ok(company);
     }
@@ -43,11 +43,11 @@ public class CompanyController : MyController
     public IResult EditCompany([FromBody] CompanyViewModel viewModel)
     {
         if (viewModel.Id is null)
-            return Results.BadRequest("Не указан идентификатор");
+            return Results.Problem("Не указан идентификатор");
         
         var company = _dbContext.Companies.FirstOrDefault(x => x.Id == viewModel.Id);
         if (company is null)
-            return Results.BadRequest("Компания не найдена");
+            return Results.Problem("Компания не найдена");
         
         company.Name = viewModel.Name;
         company.Login = viewModel.Login;
@@ -80,11 +80,11 @@ public class CompanyController : MyController
     {
         var student = _dbContext.Students.IncludeAllRecursively().FirstOrDefault(x => x.Id == vacancyResponse.StudentId);
         if (student is null)
-            return Results.BadRequest("Студент не найден");
+            return Results.Problem("Студент не найден");
         
         var vacancy = _dbContext.Vacancies.IncludeAllRecursively().FirstOrDefault(x => x.Id == vacancyResponse.VacancyId);
         if (vacancy is null)
-            return Results.BadRequest("Вакансия не найдена");
+            return Results.Problem("Вакансия не найдена");
         
         var response = new VacancyResponse
         {
@@ -115,19 +115,19 @@ public class CompanyController : MyController
     {
         var response = _dbContext.VacancyResponses.IncludeAllRecursively().FirstOrDefault(x => x.Id == viewModel.ResponseId);
         if (response is null)
-            return Results.BadRequest("Отклик не найден");
+            return Results.Problem("Отклик не найден");
         
         if (response.Status == VacancyResponseStatus.InvitedToInterview)
         {
-            return Results.BadRequest("Вы не можете изменить статус приглашенного на собеседование");
+            return Results.Problem("Вы не можете изменить статус приглашенного на собеседование");
         }
         if (response.Status == VacancyResponseStatus.Declined)
         {
-            return Results.BadRequest("Вы не можете изменить статус отклоненного");
+            return Results.Problem("Вы не можете изменить статус отклоненного");
         }
         if (response.Status == viewModel.Status)
         {
-            return Results.BadRequest("Статус уже установлен");
+            return Results.Problem("Статус уже установлен");
         }
         
         response.Status = viewModel.Status;

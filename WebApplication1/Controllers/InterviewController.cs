@@ -29,7 +29,7 @@ public class InterviewController : MyController
         // check student exists
         var student = _dbContext.Students.FirstOrDefault(x => x.Id == studentId);
         if (student is null)
-            return Results.BadRequest("Такой студент не найден");
+            return Results.Problem("Такой студент не найден");
         
         var interviews = _dbContext.Interviews.IncludeAllRecursively().Where(x => x.Student.Id == studentId).ToList();
         return Results.Ok(interviews);
@@ -43,7 +43,7 @@ public class InterviewController : MyController
         // check company exists
         var company = _dbContext.Companies.FirstOrDefault(x => x.Id == companyId);
         if (company is null)
-            return Results.BadRequest("Компания не найдена");
+            return Results.Problem("Компания не найдена");
         
         var interviews = _dbContext.Interviews.IncludeAllRecursively().Where(x => x.Vacancy.Company.Id == companyId).ToList();
         return Results.Ok(interviews);
@@ -56,7 +56,7 @@ public class InterviewController : MyController
     {
         var interview = _dbContext.Interviews.IncludeAllRecursively().FirstOrDefault(x => x.Id == id);
         if (interview is null)
-            return Results.BadRequest("Собеседование не найдено");
+            return Results.Problem("Собеседование не найдено");
         
         return Results.Ok(interview);
     }
@@ -72,7 +72,7 @@ public class InterviewController : MyController
         // check if interview exists
         var currentInterview = _dbContext.Interviews.IncludeAllRecursively().FirstOrDefault(x => x.Id == interviewId);
         if (currentInterview is null)
-            return Results.BadRequest("Интервью не найдено");
+            return Results.Problem("Интервью не найдено");
         
         // check that current time is after interview time
         if (viewModel.Result != InterviewResult.Canceled)
@@ -81,7 +81,7 @@ public class InterviewController : MyController
             if (!User.IsInRole(nameof(Admin)))
             {
                 if (currentInterview.DateTime.ToUniversalTime() > DateTime.UtcNow)
-                    return Results.BadRequest("Собеседование еще не началось");
+                    return Results.Problem("Собеседование еще не началось");
             }
         }
         
