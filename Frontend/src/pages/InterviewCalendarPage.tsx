@@ -35,10 +35,7 @@ const InterviewCalendar = () => {
         );
     }
 
-    console.log(interviews);
-
     const interviewDates = interviews?.map((interview) => new Date(interview.dateTime)) || [];
-    console.log(interviewDates)
 
     return (
         <div className="p-6 mx-auto">

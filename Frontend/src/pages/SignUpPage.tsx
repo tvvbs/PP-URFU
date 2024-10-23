@@ -32,7 +32,7 @@ const RegistrationPage = () => {
                 toast.success("Аккаунт успешно создан")
                 navigate(LOGIN_ROUTE)
             } else {
-                toast.error("Не удалось создать аккаунт")
+                toast.error(res.error?.detail || 'Не удалось создать аккаунт')
             }
         }
     }
@@ -51,7 +51,6 @@ const RegistrationPage = () => {
                             checked={isStudent}
                             onChange={() => setIsStudent(!isStudent)}
                             className="h-4 w-4"
-                            required={true}
                         />
                         <label className="text-lg">Я студент</label>
                     </div>
@@ -61,7 +60,6 @@ const RegistrationPage = () => {
                             checked={!isStudent}
                             onChange={() => setIsStudent(!isStudent)}
                             className="h-4 w-4"
-                            required={true}
                         />
                         <label className="text-lg">Я компания</label>
                     </div>

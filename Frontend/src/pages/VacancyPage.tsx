@@ -9,6 +9,8 @@ import {Vacancy} from "../types/Vacancy.ts";
 import {MAIN_PAGE_ROUTE} from "../routes.tsx";
 import toast, {Toaster} from "react-hot-toast";
 import {sendResume} from "../api/vacancyResponsesQueries.ts";
+import {Rating, VacancyReview} from "../types/Review.ts";
+import {getReviewsForVacancy, sendReviewForVacancy} from "../api/reviewQueries.ts";
 
 const VacancyPage = () => {
     return (
@@ -120,6 +122,7 @@ const VacancyComponent = () => {
                     {role === 'Student' && (
                         <ResumeSender vacancyId={vacancy!.id}/>
                     )}
+                    <VacancyReviews vacancyId={vacancy!.id}/>
                 </>
             ) : (
                 <VacancyEditForm vacancy={vacancy!} setIsEditing={setIsEditing}/>
@@ -283,6 +286,7 @@ const ResumeSender = ({vacancyId}: ResumeSenderProps) => {
         onError: () => {
             toast.error("Не удалось отправить резюме");
         },
+        gcTime: 0
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -335,5 +339,131 @@ const ResumeSender = ({vacancyId}: ResumeSenderProps) => {
         </form>
     );
 };
+
+const VacancyReviews = ({ vacancyId }: { vacancyId: string }) => {
+    const { token, role } = useAuth();
+
+    // Fetch reviews for the vacancy
+    const { data: reviews, isLoading, error } = useQuery({
+        queryKey: ['reviews', vacancyId],
+        queryFn: () => getReviewsForVacancy({
+            token: token!,
+            vacancyId: vacancyId
+        }),
+    });
+
+    return (
+        <div className="bg-white shadow-lg rounded-lg p-6 md:p-8 lg:p-10 max-w-4xl mx-auto mt-6">
+            <h2 className="text-xl font-bold mb-4">Отзывы на вакансию</h2>
+            {role === 'Student' && <ReviewForm vacancyId={vacancyId} />}
+            {isLoading ? (
+                <p>Загрузка отзывов...</p>
+            ) : error ? (
+                <p className="text-red-500">Ошибка при загрузке отзывов</p>
+            ) : reviews?.length ? (
+                <div className="max-h-80 overflow-y-auto space-y-4">
+                    {reviews.map((review: VacancyReview) => (
+                        <div key={review.id} className="p-4 border-b border-gray-200">
+                            <p className="font-semibold">{review.student.name}</p>
+                            <div className="flex items-center mb-2">
+                                <p className="text-yellow-500 mr-2">
+                                    {'★'.repeat(review.rating + 1)}{' '}
+                                </p>
+                                <p className="text-gray-500">
+                                    {`Оценка: ${review.rating + 1}`}
+                                </p>
+                            </div>
+                            <p className="text-sm text-gray-800">{review.text}</p>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <p>Отзывов пока нет.</p>
+            )}
+
+
+        </div>
+    );
+};
+
+// Form for submitting a review
+const ReviewForm = ({ vacancyId }: { vacancyId: string }) => {
+    const { token, id: studentId } = useAuth();
+    const [text, setText] = useState('');
+    const [rating, setRating] = useState<Rating>(Rating.Five); // Default rating is 5
+    const queryClient = useQueryClient();
+
+    const mutation = useMutation({
+        mutationFn: () =>
+            sendReviewForVacancy({
+                token: token!,
+                vacancyId,
+                comment: text,
+                rating,
+                studentId: studentId!
+            }),
+        onSuccess: async () => {
+            setText('');
+            setRating(Rating.Five);
+            toast.success('Отзыв успешно отправлен');
+            await queryClient.invalidateQueries({
+                queryKey: ['reviews', vacancyId],
+            });
+        },
+        onError: () => {
+            toast.error('Не удалось отправить отзыв');
+        },
+    });
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        mutation.mutate();
+    };
+
+    return (
+        <form onSubmit={handleSubmit} className="bg-gray-50 p-4 rounded-lg shadow-md mt-10 mb-5">
+            <Toaster toastOptions={{ duration: 2000 }} />
+            <h2 className="text-lg font-bold mb-2">Оставить отзыв</h2>
+
+            <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Ваш отзыв</label>
+                <textarea
+                    value={text}
+                    onChange={(e) => setText(e.target.value)}
+                    className="w-full border border-gray-300 p-2 rounded"
+                    rows={4}
+                    required
+                />
+            </div>
+
+            <div className="mb-4">
+                <label className="block text-gray-700 mb-2">Ваша оценка</label>
+                <div className="flex items-center space-x-2">
+                    {Object.values(Rating).filter((v) => !isNaN(Number(v))).map((value) => (
+                        <button
+                            type="button"
+                            key={value}
+                            onClick={() => setRating(value as Rating)}
+                            className={`${
+                                rating === value ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-gray-700'
+                            } w-8 h-8 rounded-full flex items-center justify-center`}
+                        >
+                            {value}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <button
+                type="submit"
+                className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-700"
+                disabled={mutation.isPending}
+            >
+                {mutation.isPending ? 'Отправка...' : 'Отправить отзыв'}
+            </button>
+        </form>
+    );
+};
+
 
 export default VacancyPage;

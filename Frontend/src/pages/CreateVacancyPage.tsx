@@ -1,12 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import {useQuery, useMutation} from '@tanstack/react-query';
 import {useAuth} from "../auth/AuthProvider.tsx";
 import {getCompanies} from "../api/companyQueries.ts";
 import {createVacancy} from "../api/vacancionsQueries.ts";
 import Header from "../components/Header.tsx";
 import toast from "react-hot-toast";
 
-const CreateVacancy = () => {
+const CreateVacancyPage = () => {
+    return (
+        <main>
+            <Header title={"Создание вакансии"}/>
+            <CreateVacancyForm/>
+        </main>
+    )
+}
+
+const CreateVacancyForm = () => {
     const {token} = useAuth();
 
     const [name, setName] = useState('');
@@ -15,7 +24,7 @@ const CreateVacancy = () => {
     const [description, setDescription] = useState('');
     const [companyId, setCompanyId] = useState('');
 
-    const { data: companies, isLoading: isCompaniesLoading } = useQuery({
+    const {data: companies, isLoading: isCompaniesLoading} = useQuery({
         queryKey: ['companies'],
         queryFn: () => getCompanies(token!),
     });
@@ -52,8 +61,7 @@ const CreateVacancy = () => {
     }
 
     return (
-        <main>
-            <Header title={"Создание вакансии"}/>
+        <>
             <h2 className="text-lg font-bold mb-4 text-center mt-5">Создать новую вакансию</h2>
             <form onSubmit={handleSubmit} className="max-w-md mx-auto p-4 border border-gray-300 rounded-md shadow-md">
                 <div className="mb-4">
@@ -132,8 +140,8 @@ const CreateVacancy = () => {
                     {createVacancyMutation.isPending ? 'Идет создание вакансии' : 'Создать вакансию'}
                 </button>
             </form>
-        </main>
+        </>
     );
 };
 
-export default CreateVacancy;
+export default CreateVacancyPage;
