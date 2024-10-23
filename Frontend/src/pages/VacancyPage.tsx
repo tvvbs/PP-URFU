@@ -412,7 +412,6 @@ const ReviewForm = ({ vacancyId }: { vacancyId: string }) => {
             });
         },
         onError: (error: ApiErrorResponse) => {
-            console.log(error)
             toast.error(error.detail);
         },
     });
