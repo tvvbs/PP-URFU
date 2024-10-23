@@ -20,7 +20,7 @@ public class NotificationsController : MyController
     public IResult GetNotifications()
     {
         var currentUserId = this.User.GetCurrentUserId();
-        var notifications = _dbContext.Notifications.Where(x => x.Receiver == currentUserId).ToList();
+        var notifications = _dbContext.Notifications.Where(x => x.Receiver == currentUserId || x.Receiver == Guid.Empty).ToList();
         return Results.Ok(notifications);
     }
     

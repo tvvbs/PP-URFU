@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Net;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -65,7 +66,7 @@ public class VacancyController : MyController
             Company = company
         };
         _dbContext.Vacancies.Add(vacancy);
-        _notificationService.SendNotification(vacancy.Id.Value,
+        _notificationService.SendNotification(Guid.Empty, 
                                               NotificationType.NewVacancy, 
                                               JsonSerializer.Serialize(new { companyId = company.Id, vacancyId = vacancy.Id,}));
         _dbContext.SaveChanges();
@@ -145,6 +146,19 @@ public class VacancyController : MyController
         
         _dbContext.SaveChanges();
         return Results.Ok();
+    }
+    
+    [Authorize]
+    [HttpGet("reviews/{id:guid}")]
+    [ProducesResponseType(200, Type = typeof(List<ReviewOfVacancy>))]
+    public IResult AddReview(Guid id)
+    {
+        if (!_dbContext.Companies.Where(x => x.Id == id).Any())
+        {
+            return Results.Problem(detail: "Не удалось найти компанию", statusCode: 400);
+        }
+
+        return Results.Ok(_dbContext.ReviewsOfVacancies.IncludeAllRecursively().Where(x => x.Vacancy.Id == id).ToList());
     }
     
 }
