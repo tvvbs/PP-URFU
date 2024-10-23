@@ -12,23 +12,22 @@ public class DbContextTransactionMiddleware
         _next = next;
     }
 
-    public Task InvokeAsync(HttpContext context, PracticeDbContext dbContext, ILogger<DbContextTransactionMiddleware> logger)
+    public async Task InvokeAsync(HttpContext context, PracticeDbContext dbContext, ILogger<DbContextTransactionMiddleware> logger)
     {
 
         // create middleware for transactions
-        using var transaction =dbContext.Database.BeginTransaction();
+        await using var transaction = await dbContext.Database.BeginTransactionAsync();
         try
         {
-            _next(context).Wait();
-            transaction.Commit();
+            await _next(context);
+            await transaction.CommitAsync();
         }
         catch (Exception ex)
         {
-            logger.LogError($"Exception: {ex.ToString()}");
-            transaction.Rollback();
+            logger.LogError($"Exception: {ex}");
+            await transaction.RollbackAsync();
+            
             throw;
         }
-
-        return Task.CompletedTask;
     }
 }
