@@ -72,7 +72,7 @@ public class InterviewController : MyController
         // check if interview exists
         var currentInterview = _dbContext.Interviews.FirstOrDefault(x => x.Id == interviewId);
         if (currentInterview is null)
-            return Results.BadRequest("Interview not found");
+            return Results.BadRequest("Интервью не найдено");
         
         // check that current time is after interview time
         if (viewModel.Result != InterviewResult.Canceled)
@@ -86,7 +86,16 @@ public class InterviewController : MyController
         }
         
         currentInterview.Result = viewModel.Result;
-        
+        if (currentInterview.Result == InterviewResult.Passed)
+        {
+            _dbContext.Internships.Add(new Internship()
+            {
+                Vacancy = currentInterview.Vacancy,
+                Id = Guid.NewGuid(),
+                Student = currentInterview.Student,
+                Status = InternshipStatus.PassingNow
+            });
+        }
         
         
         

@@ -151,12 +151,13 @@ public class VacancyController : MyController
     [Authorize]
     [HttpGet("reviews/{id:guid}")]
     [ProducesResponseType(200, Type = typeof(List<ReviewOfVacancy>))]
-    public IResult GetReviews(Guid id)
+    public IResult GetReview(Guid id)
     {
         if (!_dbContext.Vacancies.Where(x => x.Id == id).Any())
         {
             return Results.Problem(detail: "Не удалось найти вакансию", statusCode: 400);
         }
+        
 
         return Results.Ok(_dbContext.ReviewsOfVacancies.IncludeAllRecursively().Where(x => x.Vacancy.Id == id).ToList());
     }
