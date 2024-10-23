@@ -84,10 +84,19 @@ public class InterviewController : MyController
                     return Results.Problem("Собеседование еще не началось");
             }
         }
-        
+
+        if (currentInterview.Result == viewModel.Result)
+        {
+            return Results.Ok();
+        }
         currentInterview.Result = viewModel.Result;
         if (currentInterview.Result == InterviewResult.Passed)
         {
+            if (_dbContext.Internships.IncludeAllRecursively().Any(x => x.Vacancy.Id == currentInterview.Vacancy.Id
+                                                                        && x.Student.Id == currentInterview.Student.Id))
+            {
+                return Results.Problem("Студент уже прошел данное собеседование");
+            }
             _dbContext.Internships.Add(new Internship()
             {
                 Vacancy = currentInterview.Vacancy,
