@@ -12,31 +12,36 @@ public class DbContextTransactionMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, PracticeDbContext dbContext, ILogger<DbContextTransactionMiddleware> logger)
+    public static object _obj = new();
+    public Task InvokeAsync(HttpContext context, PracticeDbContext dbContext, ILogger<DbContextTransactionMiddleware> logger)
     {
+        lock (_obj)
+        {
 
-        if (context.Request.Path.Value != null && (context.Request.Path.Value.Contains("get-") || context.Request.Path.Value.Contains("all")))
-        {
-            Console.WriteLine("SKIP SKIP SKIP SKIP SKIP SKIP SKIP SKIP SKIP ");
-            await _next(context);
-            return;
+
+            if (context.Request.Path.Value != null && (context.Request.Path.Value.Contains("get-") || context.Request.Path.Value.Contains("all")))
+            {
+                _next(context).Wait();
+                return Task.CompletedTask;
+            }
+
+            // create middleware for transactions
+            using var transaction = dbContext.Database.BeginTransaction();
+
+            try
+            {
+                _next(context).Wait();
+                transaction.Commit();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Exception: {ex}");
+                transaction.Rollback();
+
+                throw;
+            }
         }
 
-        Console.WriteLine("NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO NO ");
-        // create middleware for transactions
-        await using var transaction = await dbContext.Database.BeginTransactionAsync();
-        
-        try
-        {
-            await _next(context);
-            await transaction.CommitAsync();
-        }
-        catch (Exception ex)
-        {
-            logger.LogError($"Exception: {ex}");
-            await transaction.RollbackAsync();
-            
-            throw;
-        }
+        return Task.CompletedTask;
     }
 }
