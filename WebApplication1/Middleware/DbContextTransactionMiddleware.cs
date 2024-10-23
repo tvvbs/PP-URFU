@@ -26,7 +26,7 @@ public class DbContextTransactionMiddleware
         {
             await transaction.RollbackAsync();
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"Exception: {ex.Message}");
+            Console.WriteLine($"Exception: {ex}");
             Console.ResetColor();
             throw;
         }
