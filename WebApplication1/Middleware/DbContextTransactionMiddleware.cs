@@ -15,7 +15,7 @@ public class DbContextTransactionMiddleware
     public async Task InvokeAsync(HttpContext context, PracticeDbContext dbContext, ILogger<DbContextTransactionMiddleware> logger)
     {
 
-        if (context.Request.Path.Value != null && context.Request.Path.Value.Contains("get-") || context.Request.Path.Value.Contains("all"))
+        if (context.Request.Path.Value != null && (context.Request.Path.Value.Contains("get-") || context.Request.Path.Value.Contains("all")))
         {
             Console.WriteLine("oiu");
             await _next(context);
