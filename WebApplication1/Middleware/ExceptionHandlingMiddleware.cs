@@ -32,9 +32,12 @@ public class ExceptionHandlingMiddleware
                         
                   };
 
-                  context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                  if (!context.Response.HasStarted)
+                  {
+                        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
 
-                  await context.Response.WriteAsJsonAsync(problemDetails);
+                        await context.Response.WriteAsJsonAsync(problemDetails);
+                  }
             }
       }
 }
