@@ -70,7 +70,7 @@ public class InterviewController : MyController
     public IResult ChangeResult([FromBody] ChangeResultViewModel viewModel, Guid? interviewId)
     {
         // check if interview exists
-        var currentInterview = _dbContext.Interviews.FirstOrDefault(x => x.Id == interviewId);
+        var currentInterview = _dbContext.Interviews.IncludeAllRecursively().FirstOrDefault(x => x.Id == interviewId);
         if (currentInterview is null)
             return Results.BadRequest("Интервью не найдено");
         
@@ -93,6 +93,7 @@ public class InterviewController : MyController
                 Vacancy = currentInterview.Vacancy,
                 Id = Guid.NewGuid(),
                 Student = currentInterview.Student,
+                VacancyId = currentInterview.Vacancy.Id,
                 Status = InternshipStatus.PassingNow
             });
         }
