@@ -78,6 +78,10 @@ public class CompanyController : MyController
     [HttpPost("respond-to-vacancy")]
     public async Task<IResult> RespondToVacancy([FromForm] VacancyResponseViewModel vacancyResponse)
     {
+        if (_dbContext.VacancyResponses.IncludeAllRecursively().Any(x => x.Student.Id == vacancyResponse.StudentId && x.Vacancy.Id == vacancyResponse.VacancyId))
+        {
+            return Results.Problem("Вы уже откликались на вакансию");
+        }
         var student = _dbContext.Students.IncludeAllRecursively().FirstOrDefault(x => x.Id == vacancyResponse.StudentId);
         if (student is null)
             return Results.Problem("Студент не найден");

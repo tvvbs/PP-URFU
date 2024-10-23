@@ -29,7 +29,6 @@ public class ExceptionHandlingMiddleware
                         Status = StatusCodes.Status500InternalServerError,
                         Title = "Привет 👋 на сервере случилась беда",
                         Detail = "Подробнее: \n" + exception,
-                        
                   };
 
                   if (!context.Response.HasStarted)
