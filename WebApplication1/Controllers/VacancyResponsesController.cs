@@ -18,7 +18,7 @@ public class VacancyResponsesController : MyController
       [ProducesResponseType(200, Type = typeof(List<VacancyResponse>))]
       public IResult GetAll()
       {
-            return Results.Ok(_dbContext.VacancyResponses.Include(x => x.Vacancy).Include(x => x.Student).Include(x => x.Resume).IncludeAllRecursively().ToList());
+            return Results.Ok(_dbContext.VacancyResponses.Include(x => x.Vacancy).Include(x => x.Student).Include(x => x.Resume).ToList());
       }
       
       // all for student 
