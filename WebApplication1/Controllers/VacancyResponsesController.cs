@@ -18,7 +18,7 @@ public class VacancyResponsesController : MyController
       [ProducesResponseType(200, Type = typeof(List<VacancyResponse>))]
       public IResult GetAll()
       {
-            return Results.Ok(_dbContext.VacancyResponses.Include(x => x.Vacancy).Include(x => x.Student).Include(x => x.Resume).ToList());
+            return Results.Ok(_dbContext.VacancyResponses.Include(x => x.Vacancy).Include(x => x.Student).Include(x => x.Resume).AsSplitQuery().ToList());
       }
       
       // all for student 
