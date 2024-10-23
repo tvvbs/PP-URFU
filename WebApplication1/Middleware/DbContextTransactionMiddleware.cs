@@ -16,7 +16,7 @@ public class DbContextTransactionMiddleware
     {
 
         // create middleware for transactions
-        await using var transaction = dbContext.Database.BeginTransaction();
+        await using var transaction = await dbContext.Database.BeginTransactionAsync();
         try
         {
             await _next(context);
@@ -28,7 +28,6 @@ public class DbContextTransactionMiddleware
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Exception: {ex.Message}");
             Console.ResetColor();
-            throw;
         }
     }
 }
