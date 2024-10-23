@@ -38,7 +38,6 @@ export const sendReviewForVacancy = async (body: SendReviewForVacancyBody): Prom
     });
 
     if (!res.ok) {
-        const error: ApiErrorResponse = await res.json();
-        throw new Error(error.detail);
+        throw await res.json()
     }
 }
