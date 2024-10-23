@@ -374,7 +374,7 @@ const VacancyReviews = ({ vacancyId }: { vacancyId: string }) => {
                                     {`Оценка: ${review.rating + 1}`}
                                 </p>
                             </div>
-                            <p className="text-sm text-gray-800">{review.text}</p>
+                            <p className="text-sm text-gray-800">{review.comment}</p>
                         </div>
                     ))}
                 </div>

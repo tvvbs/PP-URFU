@@ -6,7 +6,7 @@ export type VacancyReview = {
     student: Student
     vacancy: Vacancy
     rating: Rating
-    text: string
+    comment: string
 }
 
 
