@@ -24,7 +24,7 @@ const RegistrationPage = () => {
                 toast.success("Аккаунт успешно создан")
                 navigate(LOGIN_ROUTE)
             } else {
-                toast.error("Не удалось создать аккаунт")
+                toast.error(res.error?.detail || 'Не удалось создать аккаунт')
             }
         } else {
             const res = await register_company(email, password, passwordConfirmation, companyName)
@@ -51,6 +51,7 @@ const RegistrationPage = () => {
                             checked={isStudent}
                             onChange={() => setIsStudent(!isStudent)}
                             className="h-4 w-4"
+                            required={true}
                         />
                         <label className="text-lg">Я студент</label>
                     </div>
@@ -60,6 +61,7 @@ const RegistrationPage = () => {
                             checked={!isStudent}
                             onChange={() => setIsStudent(!isStudent)}
                             className="h-4 w-4"
+                            required={true}
                         />
                         <label className="text-lg">Я компания</label>
                     </div>
@@ -70,6 +72,7 @@ const RegistrationPage = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="p-2 border border-gray-300 rounded"
+                            required={true}
                         />
                     </div>
                     <div className="flex flex-col space-y-2">
@@ -79,6 +82,7 @@ const RegistrationPage = () => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className="p-2 border border-gray-300 rounded"
+                            required={true}
                         />
                     </div>
                     <div className="flex flex-col space-y-2">
@@ -88,6 +92,7 @@ const RegistrationPage = () => {
                             value={passwordConfirmation}
                             onChange={(e) => setPasswordConfirmation(e.target.value)}
                             className="p-2 border border-gray-300 rounded"
+                            required={true}
                         />
                     </div>
                     {isStudent ? (
@@ -99,6 +104,7 @@ const RegistrationPage = () => {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     className="p-2 border border-gray-300 rounded"
+                                    required={true}
                                 />
                             </div>
                             <div className="flex flex-col space-y-2">
@@ -108,6 +114,7 @@ const RegistrationPage = () => {
                                     value={surname}
                                     onChange={(e) => setSurname(e.target.value)}
                                     className="p-2 border border-gray-300 rounded"
+                                    required={true}
                                 />
                             </div>
                             <div className="flex flex-col space-y-2">
@@ -117,6 +124,7 @@ const RegistrationPage = () => {
                                     value={patronymic}
                                     onChange={(e) => setPatronymic(e.target.value)}
                                     className="p-2 border border-gray-300 rounded"
+                                    required={true}
                                 />
                             </div>
                         </div>
@@ -128,6 +136,7 @@ const RegistrationPage = () => {
                                 value={companyName}
                                 onChange={(e) => setCompanyName(e.target.value)}
                                 className="p-2 border border-gray-300 rounded"
+                                required={true}
                             />
                         </div>
                     )}

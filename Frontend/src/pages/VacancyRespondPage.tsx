@@ -161,6 +161,7 @@ const AdminVacancyRespondComponent = () => {
 
     return (
         <div>
+            <h1 className="text-2xl font-bold mb-4">Список откликов</h1>
             <ul className="divide-y divide-gray-200">
                 {query.data?.map((i) => {
                     return (<li key={i.id} className="py-4 flex justify-between md:py-6 lg:py-8">
