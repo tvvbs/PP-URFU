@@ -4,7 +4,7 @@ import {
     CREATE_VACANCY_ROUTE,
     INTERVIEW_CALENDAR_ROUTE,
     MAIN_PAGE_ROUTE,
-    PROFILE_ROUTE,
+    PROFILE_ROUTE, VACANCIES_ROUTE,
     VACANCY_RESPOND_ROUTE
 } from "../routes.tsx";
 import {useAuth} from "../auth/AuthProvider.tsx";
@@ -102,27 +102,35 @@ const NotificationCounter = () => {
 
             {showPopup && (
                 <div
-                    className="absolute top-10 right-0 w-72 bg-white shadow-lg rounded-lg p-4 max-h-48 overflow-y-auto border border-gray-300">
+                    className="absolute top-10 right-0 w-80 bg-white shadow-lg rounded-lg p-4 max-h-48 overflow-y-auto border border-gray-300">
                     {data?.length ? (
                         data.map((n: Notification) => (
                             <div key={n.id}
-                                 className="p-2 border-b border-gray-200 flex justify-between items-center hover:bg-gray-100 transition duration-200">
-                                <div className="flex-1 overflow-hidden">
+                                 className="p-2 border-b border-gray-200 flex justify-between items-center hover:bg-gray-100 transition duration-200 cursor-pointer"
+                                 onClick={() => setExpandedNotifId(expandedNotifId === n.id ? null : n.id)}>
+                                <div className="flex-3 overflow-hidden">
                                     <p className="text-sm font-semibold text-black">{n.type === NotificationType.NewVacancy ? "Новая вакансия" : "Сообщение"}</p>
 
-                                    <p
+                                    {n.type === NotificationType.FreeForm && <p
+                                        className={`text-xs text-gray-500 ${expandedNotifId === n.id ? '' : 'truncate'}`}
+                                    >
+                                        {n.jsonData}
+                                    </p>}
+                                    {n.type === NotificationType.NewVacancy && <Link
+                                        to={`${VACANCIES_ROUTE}/${JSON.parse(n.jsonData).vacancyId}`}
                                         className={`text-xs text-gray-500 ${expandedNotifId === n.id ? '' : 'truncate'}`}
                                         onClick={() => setExpandedNotifId(expandedNotifId === n.id ? null : n.id)}
                                     >
-                                        {n.jsonData}
-                                    </p>
+                                        Посмотреть новую вакансию
+                                    </Link>}
+
                                 </div>
                                 {!n.isRead && (
                                     <button
-                                        className="bg-green-500 text-white px-3 py-1 text-xs rounded hover:bg-green-600 transition duration-200 flex-shrink-0"
+                                        className="bg-green-500 text-white px-3 py-1 text-xs rounded hover:bg-green-600 transition duration-200 flex-1"
                                         onClick={() => mutation.mutate(n.id)}
                                     >
-                                        Пометить как прочитанное
+                                        Прочитано
                                     </button>
                                 )}
                             </div>

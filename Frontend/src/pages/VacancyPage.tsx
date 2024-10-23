@@ -10,7 +10,8 @@ import {MAIN_PAGE_ROUTE} from "../routes.tsx";
 import toast, {Toaster} from "react-hot-toast";
 import {sendResume} from "../api/vacancyResponsesQueries.ts";
 import {Rating, VacancyReview} from "../types/Review.ts";
-import {getReviewsForVacancy, sendReviewForVacancy} from "../api/reviewQueries.ts";
+import {getReviewsForVacancy, sendReviewForVacancy} from "../api/reviewsQueries.ts";
+import {ApiErrorResponse} from "../types/ApiErrorResponse.ts";
 
 const VacancyPage = () => {
     return (
@@ -378,7 +379,7 @@ const VacancyReviews = ({ vacancyId }: { vacancyId: string }) => {
                     ))}
                 </div>
             ) : (
-                <p>Отзывов пока нет.</p>
+                <p>Отзывов пока нет</p>
             )}
 
 
@@ -410,8 +411,8 @@ const ReviewForm = ({ vacancyId }: { vacancyId: string }) => {
                 queryKey: ['reviews', vacancyId],
             });
         },
-        onError: () => {
-            toast.error('Не удалось отправить отзыв');
+        onError: (error: ApiErrorResponse) => {
+            toast.error(error.detail);
         },
     });
 
@@ -448,7 +449,7 @@ const ReviewForm = ({ vacancyId }: { vacancyId: string }) => {
                                 rating === value ? 'bg-yellow-500 text-white' : 'bg-gray-200 text-gray-700'
                             } w-8 h-8 rounded-full flex items-center justify-center`}
                         >
-                            {value}
+                            {value + 1}
                         </button>
                     ))}
                 </div>

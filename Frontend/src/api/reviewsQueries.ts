@@ -3,7 +3,7 @@ import {API_URL} from "../consts.ts";
 import {ApiErrorResponse} from "../types/ApiErrorResponse.ts";
 
 export const getReviewsForVacancy = async ({vacancyId, token}: {vacancyId: string, token: string}): Promise<VacancyReview[]> => {
-    const res = await fetch(`${API_URL}/Vacancy/get-all-reviews/${vacancyId}`, {
+    const res = await fetch(`${API_URL}/Vacancy/reviews/${vacancyId}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
