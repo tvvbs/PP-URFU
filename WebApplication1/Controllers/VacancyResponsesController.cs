@@ -36,6 +36,6 @@ public class VacancyResponsesController : MyController
             {
                   return Results.Problem("Студент не найден");
             }
-            return Results.Ok(_dbContext.VacancyResponses.Include(x => x.Vacancy).Include(x => x.Student).Include(x => x.Resume).IncludeAllRecursively().Where(x => x.Student.Id == studentId).ToList());
+            return Results.Ok(_dbContext.VacancyResponses.Include(x => x.Vacancy).Include(x => x.Student).Include(x => x.Resume).Where(x => x.Student.Id == studentId).ToList());
       }
 }
