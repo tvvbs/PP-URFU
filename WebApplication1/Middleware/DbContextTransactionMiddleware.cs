@@ -28,5 +28,7 @@ public class DbContextTransactionMiddleware
             transaction.Rollback();
             throw;
         }
+
+        return Task.CompletedTask;
     }
 }
