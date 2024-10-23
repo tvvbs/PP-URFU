@@ -6,7 +6,7 @@ namespace WebApplication1.Database;
 public static class EfExtensions
 {
     public static IQueryable<TEntity> IncludeAllRecursively<TEntity>(this IQueryable<TEntity> queryable, 
-        int maxDepth = int.MaxValue, bool addSeenTypesToIgnoreList = true, HashSet<Type>? ignoreTypes = null)
+        int maxDepth = 1, bool addSeenTypesToIgnoreList = true, HashSet<Type>? ignoreTypes = null)
         where TEntity : class
     {
         var type = typeof(TEntity);
