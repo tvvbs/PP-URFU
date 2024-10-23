@@ -12,7 +12,7 @@ public class DbContextTransactionMiddleware
         _next = next;
     }
 
-    public async Task InvokeAsync(HttpContext context, PracticeDbContext dbContext)
+    public async Task InvokeAsync(HttpContext context, PracticeDbContext dbContext, ILogger<DbContextTransactionMiddleware> logger)
     {
 
         // create middleware for transactions
@@ -24,7 +24,7 @@ public class DbContextTransactionMiddleware
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Exception: {ex}");
+            logger.LogError($"Exception: {ex.ToString()}");
             await transaction.RollbackAsync();
             
             throw;
