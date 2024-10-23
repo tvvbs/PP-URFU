@@ -92,16 +92,10 @@ const StudentVacancyRespondComponent = () => {
 const AdminVacancyRespondComponent = () => {
     const handleDownload = (file: File) => {
         try {
-            const url = URL.createObjectURL(new Blob([file.data], { type: 'application/octet-stream' }));
-
             const link = document.createElement('a');
-            link.href = url;
+            link.href = 'data:application/octet-stream;base64,' + file.data;
             link.download = file.name;
-            document.body.appendChild(link);
-            link.click(); // Trigger the download
-
-            URL.revokeObjectURL(url);
-            document.body.removeChild(link); // Remove link element
+            link.click();
         } catch (error) {
             console.error('Error while downloading resume:', error);
         }
