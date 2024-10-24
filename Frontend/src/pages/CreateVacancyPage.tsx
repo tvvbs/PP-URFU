@@ -77,6 +77,7 @@ const CreateVacancyForm = () => {
                         id="name"
                         type="text"
                         value={name}
+                        required={true}
                         onChange={(event) => setName(event.target.value)}
                     />
                 </div>
@@ -89,6 +90,7 @@ const CreateVacancyForm = () => {
                         id="positionName"
                         type="text"
                         value={positionName}
+                        required={true}
                         onChange={(event) => setPositionName(event.target.value)}
                     />
                 </div>
@@ -101,6 +103,7 @@ const CreateVacancyForm = () => {
                         id="incomeRub"
                         type="number"
                         value={incomeRub}
+                        required={true}
                         onChange={(event) => setIncomeRub(event.target.value)}
                     />
                 </div>
@@ -112,6 +115,7 @@ const CreateVacancyForm = () => {
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="description"
                         value={description}
+                        required={true}
                         onChange={(event) => setDescription(event.target.value)}
                     />
                 </div>
@@ -123,6 +127,7 @@ const CreateVacancyForm = () => {
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="companyId"
                         value={companyId}
+                        required={true}
                         onChange={(event) => setCompanyId(event.target.value)}
                     >
                         {isCompaniesLoading ? (
