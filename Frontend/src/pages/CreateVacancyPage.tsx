@@ -60,6 +60,10 @@ const CreateVacancyForm = () => {
         return <div>Загрузка...</div>;
     }
 
+    if (!companies || companies.length === 0) {
+        return <div>Нет доступных компаний</div>;
+    }
+
     return (
         <>
             <h2 className="text-lg font-bold mb-4 text-center mt-5">Создать новую вакансию</h2>
@@ -95,7 +99,7 @@ const CreateVacancyForm = () => {
                     <input
                         className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         id="incomeRub"
-                        type="text"
+                        type="number"
                         value={incomeRub}
                         onChange={(event) => setIncomeRub(event.target.value)}
                     />
