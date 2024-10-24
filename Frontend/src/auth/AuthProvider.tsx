@@ -40,6 +40,7 @@ export default function AuthProvider({children}: AuthProviderProps) {
             if (!response.error) {
                 setToken(response.token)
                 setRole(role)
+                setId(response.id)
                 saveUserInfo(role, response.token!, response.id!);
 
                 return {
@@ -54,6 +55,7 @@ export default function AuthProvider({children}: AuthProviderProps) {
         } catch {
             setToken(null)
             setRole(null)
+            setId(null)
             return {
                 success: false,
                 error: {
