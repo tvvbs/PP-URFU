@@ -12,11 +12,9 @@ public class DbContextTransactionMiddleware
         _next = next;
     }
 
-    public static object _obj = new();
     public Task InvokeAsync(HttpContext context, PracticeDbContext dbContext, ILogger<DbContextTransactionMiddleware> logger)
     {
-        lock (_obj)
-        {
+    
 
 
             if (context.Request.Path.Value != null && (context.Request.Path.Value.Contains("get-") || context.Request.Path.Value.Contains("all")))
@@ -40,7 +38,7 @@ public class DbContextTransactionMiddleware
 
                 throw;
             }
-        }
+        
 
         return Task.CompletedTask;
     }
