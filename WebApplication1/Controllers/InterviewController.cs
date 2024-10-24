@@ -38,6 +38,7 @@ public class InterviewController : MyController
     // create method for getting all interviews for company
     [Authorize]
     [HttpGet("get-all-for-company/{companyId:guid}")]
+    [ProducesResponseType(200, Type = typeof(List<Interview>))]
     public IResult GetAllForCompany(Guid companyId)
     {
         // check company exists
@@ -52,6 +53,7 @@ public class InterviewController : MyController
     // create method for getting interview by id
     [Authorize]
     [HttpGet("get/{id:guid}")]
+    [ProducesResponseType(200, Type = typeof(Interview))]
     public IResult GetInterview(Guid id)
     {
         var interview = _dbContext.Interviews.IncludeAllRecursively().FirstOrDefault(x => x.Id == id);
