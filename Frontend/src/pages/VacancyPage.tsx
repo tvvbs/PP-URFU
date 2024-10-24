@@ -268,7 +268,7 @@ const ResumeSender = ({vacancyId}: ResumeSenderProps) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const queryClient = useQueryClient();
-    const mutation = useMutation({
+    const sendResumeMutation = useMutation({
         mutationFn: () => sendResume({
             token: token!,
             studentId: id!,
@@ -284,15 +284,15 @@ const ResumeSender = ({vacancyId}: ResumeSenderProps) => {
             toast.success("Резюме успешно отправлено");
             await queryClient.invalidateQueries({queryKey: ['vacancy-responses', id]})
         },
-        onError: () => {
-            toast.error("Не удалось отправить резюме");
+        onError: (error: ApiErrorResponse) => {
+            toast.error(error.detail);
         },
         gcTime: 0
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        mutation.mutate();
+        sendResumeMutation.mutate();
     };
 
     return (

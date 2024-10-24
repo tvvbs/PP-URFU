@@ -26,8 +26,7 @@ export const sendResume = async (body: SendResumeBody): Promise<void> => {
     });
 
     if (!response.ok) {
-        const res: ApiErrorResponse = await response.json();
-        throw new Error(res.detail);
+        throw await response.json();
     }
 }
 
